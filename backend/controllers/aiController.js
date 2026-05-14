@@ -3,26 +3,23 @@ const db = require('../config/db');
 
 // Initialize Gemini
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const MODEL_NAME = 'gemini-2.0-flash';
+// Model selection: gemini-1.5-flash is standard, gemini-2.0-flash is faster but might have lower limits
+const MODEL_NAME = 'gemini-1.5-flash';
 
 exports.chat = async (req, res) => {
   try {
     const { message, history, lang } = req.body;
-    
     const contents = [];
-    if (history && history.length > 0) {
+    if (history) {
       history.forEach(msg => {
-         contents.push({ 
-           role: msg.role === 'user' ? 'user' : 'model', 
-           parts: [{ text: msg.content || msg.text }] 
-         });
+        contents.push({ role: msg.role === 'user' ? 'user' : 'model', parts: [{ text: msg.content || msg.text || '' }] });
       });
     }
     contents.push({ role: 'user', parts: [{ text: message }] });
 
     const systemInstruction = lang === 'TR' 
-        ? "Sen Erken Teşhis AI adında bir sağlık danışmanısın. Kullanıcılara tıbbi konularda genel bilgiler verirsin, ancak her zaman kesin teşhis için bir doktora görünmeleri gerektiğini belirtirsin. Türkçe ve empatik bir dille yanıt ver."
-        : "You are Early Diagnosis AI, a professional health advisor. You provide general health information and analysis based on user symptoms and data. Always emphasize that your advice is a preliminary screening and not a professional medical diagnosis, and suggest seeing a doctor for official results. Be empathetic and professional.";
+        ? "Sen Erken Teşhis AI adında bir sağlık danışmanısın. Türkçe yanıt ver."
+        : "You are Early Diagnosis AI, a health advisor. Respond in English.";
 
     const result = await ai.models.generateContent({
       model: MODEL_NAME,
@@ -30,64 +27,42 @@ exports.chat = async (req, res) => {
       systemInstruction: systemInstruction
     });
 
-    const aiMessage = result.text;
+    const aiMessage = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || result.text || "Yapay zeka yanıt üretemedi.";
     
-    if (req.user && req.user.userId) {
+    if (req.user?.userId) {
       await db.query(
         'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3)',
-        [req.user.userId, 'chat', `User: ${message}\nAI: ${aiMessage}`]
+        [req.user.userId, 'chat', aiMessage.substring(0, 500)]
       );
     }
-
     res.json({ response: aiMessage });
   } catch (err) {
     console.error('Chat AI Error:', err);
-    res.status(500).json({ error: 'Yapay zeka yanıt üretirken hata oluştu.' });
+    res.status(500).json({ error: 'AI Error', details: err.message });
   }
 };
 
 exports.analyzeImage = async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: 'Lütfen bir fotoğraf yükleyin.' });
-
+    if (!req.file) return res.status(400).json({ error: 'Dosya yok' });
     const { symptoms, moodScore, lang } = req.body;
     const base64Image = req.file.buffer.toString('base64');
     const mimeType = req.file.mimetype;
     
-    let prompt = lang === 'TR'
-        ? "Bir sağlık uzmanı gibi bu görüntüyü analiz et. Cilt, göz, ağız veya saçla ilgili belirgin bir sorun veya semptom var mı?"
-        : "Analyze this image as a health expert. Is there any visible issue or symptom related to skin, eyes, mouth, or hair?";
+    let prompt = lang === 'TR' ? "Bu görüntüyü analiz et." : "Analyze this image.";
+    if (symptoms) prompt += ` Semptomlar: ${symptoms}`;
     
-    if (symptoms) prompt += lang === 'TR' ? `\nEk semptomlar: ${symptoms}` : `\nAdditional symptoms: ${symptoms}`;
-    if (moodScore) prompt += lang === 'TR' ? `\nMod puanı: ${moodScore}` : `\nMood score: ${moodScore}`;
-    
-    prompt += lang === 'TR'
-        ? "\nTürkçe olarak detaylı raporla. Tıbbi tavsiye olmadığını belirt."
-        : "\nReport in detailed English. Mention it's not medical advice.";
-
     const result = await ai.models.generateContent({
       model: MODEL_NAME,
-      contents: [
-        { 
-          parts: [
-            { inlineData: { data: base64Image, mimeType: mimeType } },
-            { text: prompt }
-          ] 
-        }
-      ]
+      contents: [{ parts: [{ inlineData: { data: base64Image, mimeType: mimeType } }, { text: prompt }] }]
     });
 
-    const aiAnalysis = result.text;
-
-    await db.query(
-      'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3)',
-      [req.user.userId, 'image_analysis', aiAnalysis]
-    );
-
+    const aiAnalysis = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || result.text || "Analiz yapılamadı.";
+    await db.query('INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3)', [req.user.userId, 'image_analysis', aiAnalysis]);
     res.json({ analysis: aiAnalysis });
   } catch (err) {
     console.error('Image AI Error:', err);
-    res.status(500).json({ error: 'Görüntü analiz edilirken hata oluştu.' });
+    res.status(500).json({ error: 'Image AI Error', details: err.message });
   }
 };
 
@@ -95,35 +70,29 @@ exports.generateReport = async (req, res) => {
   try {
     const { lang } = req.body;
     const healthResult = await db.query(
-      'SELECT * FROM health_entries WHERE user_id = $1 AND date >= CURRENT_DATE - INTERVAL \'7 days\' ORDER BY date DESC',
+      'SELECT * FROM health_entries WHERE user_id = $1 ORDER BY date DESC LIMIT 10',
       [req.user.userId]
     );
     
-    if (healthResult.rows.length === 0) {
-      return res.status(400).json({ error: lang === 'TR' ? 'Veri yok.' : 'No data.' });
-    }
+    if (healthResult.rows.length === 0) return res.status(400).json({ error: 'Veri yok' });
 
-    const dataString = healthResult.rows.map(e => `[${new Date(e.date).toLocaleDateString()}] Pulse:${e.pulse}, BP:${e.blood_pressure}, Symptoms:${e.symptoms}`).join('\n');
-
-    const prompt = lang === 'TR'
-        ? `Haftalık sağlık raporu oluştur:\n${dataString}`
-        : `Generate weekly health report:\n${dataString}`;
+    const dataString = healthResult.rows.map(e => `[${e.date}] Pulse:${e.pulse}`).join('\n');
+    const prompt = `Health data:\n${dataString}\n\nGenerate a summary. Language: ${lang}`;
 
     const result = await ai.models.generateContent({
       model: MODEL_NAME,
       contents: [{ role: 'user', parts: [{ text: prompt }] }]
     });
 
-    const reportContent = result.text;
+    const reportContent = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || result.text || "Rapor oluşturulamadı.";
     const newReport = await db.query(
       'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3) RETURNING *',
       [req.user.userId, 'report', reportContent]
     );
-
     res.json({ report: newReport.rows[0] });
   } catch (err) {
     console.error('Report AI Error:', err);
-    res.status(500).json({ error: 'Hata.' });
+    res.status(500).json({ error: 'Report AI Error', details: err.message });
   }
 };
 
@@ -135,29 +104,25 @@ exports.generateDoctorSummary = async (req, res) => {
       [req.user.userId]
     );
     
-    if (healthResult.rows.length === 0) return res.status(400).json({ error: 'No data.' });
+    if (healthResult.rows.length === 0) return res.status(400).json({ error: 'Veri yok' });
 
-    const dataString = healthResult.rows.map(e => `[${new Date(e.date).toLocaleDateString()}] Pulse:${e.pulse}, Symptoms:${e.symptoms}`).join('\n');
-
-    const prompt = lang === 'TR'
-        ? `Doktor özeti oluştur:\n${dataString}`
-        : `Generate doctor summary:\n${dataString}`;
+    const dataString = healthResult.rows.map(e => `[${e.date}] Pulse:${e.pulse}`).join('\n');
+    const prompt = `Doctor summary for:\n${dataString}\n\nLanguage: ${lang}`;
 
     const result = await ai.models.generateContent({
       model: MODEL_NAME,
       contents: [{ role: 'user', parts: [{ text: prompt }] }]
     });
 
-    const summaryContent = result.text;
+    const summaryContent = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || result.text || "Özet oluşturulamadı.";
     const newReport = await db.query(
       'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3) RETURNING *',
       [req.user.userId, 'doctor_summary', summaryContent]
     );
-
     res.json({ report: newReport.rows[0] });
   } catch (err) {
     console.error('Doctor Summary AI Error:', err);
-    res.status(500).json({ error: 'Hata.' });
+    res.status(500).json({ error: 'Doctor Summary AI Error', details: err.message });
   }
 };
 
@@ -169,7 +134,6 @@ exports.getReports = async (req, res) => {
     );
     res.json(reports.rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Hata.' });
+    res.status(500).json({ error: 'Hata' });
   }
 };
