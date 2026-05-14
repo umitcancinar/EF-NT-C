@@ -33,7 +33,7 @@ const app = {
     async checkAuth() {
         const token = localStorage.getItem('token');
         if (!token) {
-            window.location.hash = '#login';
+            window.location.hash = '#landing';
             return;
         }
 
@@ -66,7 +66,9 @@ const app = {
         localStorage.removeItem('token');
         this.user = null;
         document.getElementById('sidebar').classList.add('hidden');
-        window.location.hash = '#login';
+        document.getElementById('main-content').style.marginLeft = '0';
+        document.getElementById('main-content').style.width = '100%';
+        window.location.hash = '#landing';
     },
 
     updateNav(hash) {
@@ -80,11 +82,25 @@ const app = {
 
     async router() {
         const viewContainer = document.getElementById('view-container');
-        const hash = window.location.hash || '#login';
+        const mainContent = document.getElementById('main-content');
+        const hash = window.location.hash || '#landing';
         
-        // Redirect to login if not authenticated
-        if (hash !== '#login' && !this.user) {
-            window.location.hash = '#login';
+        // Handle layout for non-auth pages
+        if (hash === '#landing' || hash === '#login') {
+            document.getElementById('sidebar').classList.add('hidden');
+            mainContent.style.marginLeft = '0';
+            mainContent.style.width = '100%';
+            mainContent.style.padding = '0';
+        } else if (this.user) {
+            document.getElementById('sidebar').classList.remove('hidden');
+            mainContent.style.marginLeft = 'calc(var(--sidebar-width) + 32px)';
+            mainContent.style.width = 'calc(100% - var(--sidebar-width) - 32px)';
+            mainContent.style.padding = '32px 32px 32px 0';
+        }
+
+        // Redirect to landing if not authenticated
+        if (hash !== '#landing' && hash !== '#login' && !this.user) {
+            window.location.hash = '#landing';
             return;
         }
 
@@ -92,9 +108,13 @@ const app = {
         viewContainer.innerHTML = ''; // Clear current view
 
         switch (hash) {
+            case '#landing':
+                if (this.user) { window.location.hash = '#dashboard'; return; }
+                viewContainer.innerHTML = this.views.landing();
+                this.initLandingView();
+                break;
             case '#login':
                 if (this.user) { window.location.hash = '#dashboard'; return; }
-                document.getElementById('sidebar').classList.add('hidden');
                 viewContainer.innerHTML = this.views.login();
                 this.initLoginView();
                 break;
@@ -124,6 +144,67 @@ const app = {
 
     // --- Views ---
     views: {
+        landing: () => `
+            <div class="view-section" style="padding: 40px 20px;">
+                <div class="hero">
+                    <div class="logo" style="justify-content: center; border: none; margin-bottom: 40px;">
+                        <i class='bx bx-pulse' style="font-size: 60px"></i>
+                        <h2 style="font-size: 32px;">ErkenTeşhis<span>AI</span></h2>
+                    </div>
+                    <h1>Geleceğin Sağlık Takibi, <br>Bugünün Teknolojisiyle.</h1>
+                    <p>Yapay zeka destekli multimodal analizler, anlık sağlık danışmanlığı ve detaylı raporlama ile sağlığınızı bir adım öteden takip edin.</p>
+                    <div style="display: flex; gap: 20px; justify-content: center;">
+                        <button class="btn btn-primary" style="width: auto; padding: 16px 40px;" id="start-now">Hemen Başlayın</button>
+                        <button class="btn glass-panel" style="width: auto; padding: 16px 40px;" id="hero-login">Giriş Yap</button>
+                    </div>
+                </div>
+
+                <div class="features-grid container" style="max-width: 1200px; margin: 80px auto;">
+                    <div class="glass-panel feature-card">
+                        <i class='bx bx-scan'></i>
+                        <h3>Multimodal Analiz</h3>
+                        <p>Cilt, göz ve ağız fotoğraflarınızı Gemini AI ile analiz edin, olası riskleri saniyeler içinde öğrenin.</p>
+                    </div>
+                    <div class="glass-panel feature-card">
+                        <i class='bx bx-bot'></i>
+                        <h3>AI Sağlık Asistanı</h3>
+                        <p>7/24 aktif sağlık danışmanınızla semptomlarınız hakkında konuşun, bilinçli öneriler alın.</p>
+                    </div>
+                    <div class="glass-panel feature-card">
+                        <i class='bx bx-line-chart'></i>
+                        <h3>Trend Takibi</h3>
+                        <p>Nabız, tansiyon ve şeker gibi kritik verilerinizi grafiklerle izleyin, sağlığınızdaki değişimi fark edin.</p>
+                    </div>
+                </div>
+
+                <div class="how-it-works container" style="max-width: 1000px; margin: 120px auto;">
+                    <h2 class="section-title">Nasıl Çalışır?</h2>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <h4>Verilerini Gir</h4>
+                            <p>Günlük sağlık metriklerini ve semptomlarını kaydet.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <h4>Analiz Al</h4>
+                            <p>Fotoğraf yükle veya AI asistanınla detaylı sohbet et.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">3</div>
+                            <h4>Raporla</h4>
+                            <p>Haftalık özetler ve doktor raporlarını anında oluştur.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 100px 0;">
+                    <h2 style="margin-bottom: 24px;">Hemen Ücretsiz Hesap Oluşturun</h2>
+                    <button class="btn btn-accent" style="width: auto; padding: 16px 60px; margin: 0 auto;" id="cta-register">Kayıt Ol</button>
+                </div>
+            </div>
+        `,
+
         login: () => `
             <div class="auth-container">
                 <div class="glass-panel auth-box">
@@ -379,6 +460,19 @@ const app = {
     },
 
     // --- Init Views Functions ---
+
+    initLandingView() {
+        document.getElementById('start-now').addEventListener('click', () => {
+            window.location.hash = '#login';
+        });
+        document.getElementById('hero-login').addEventListener('click', () => {
+            window.location.hash = '#login';
+        });
+        document.getElementById('cta-register').addEventListener('click', () => {
+            document.getElementById('view-container').innerHTML = this.views.register();
+            this.initRegisterView();
+        });
+    },
 
     initLoginView() {
         const form = document.getElementById('login-form');

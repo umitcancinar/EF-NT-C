@@ -533,8 +533,95 @@ h1, h2, h3 {
     background: rgba(255, 255, 255, 0.02);
 }
 
-/* Responsive */
+/* Hero Section */
+.hero {
+    padding: 120px 0 80px;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeIn 1s ease-out;
+}
+.hero h1 {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.hero p {
+    font-size: 20px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+/* Feature Cards */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 80px;
+}
+.feature-card {
+    padding: 40px;
+    text-align: center;
+    transition: var(--transition);
+}
+.feature-card i {
+    font-size: 48px;
+    color: var(--primary);
+    margin-bottom: 24px;
+}
+.feature-card h3 {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+.feature-card p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* How it Works */
+.how-it-works {
+    margin-top: 120px;
+    padding: 80px 0;
+}
+.section-title {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 60px;
+}
+.steps {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+.step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+.step-num {
+    width: 40px;
+    height: 40px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin: 0 auto 20px;
+}
+
+/* Responsive Landing */
 @media (max-width: 768px) {
+    .hero h1 { font-size: 40px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .steps { flex-direction: column; }
+    
     #sidebar {
         transform: translateX(-120%);
         transition: var(--transition);
