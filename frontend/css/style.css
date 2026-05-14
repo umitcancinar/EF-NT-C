@@ -733,6 +733,10 @@ h1, h2, h3 {
 
 /* Responsive Landing */
 @media (max-width: 768px) {
+    header { height: auto; padding: 10px; }
+    .nav-container { flex-direction: column; gap: 10px; }
+    .nav-left { gap: 12px; }
+    .nav-right { gap: 12px; font-size: 12px; }
     .hero h1 { font-size: 40px; }
     .features-grid { grid-template-columns: 1fr; }
     .steps { flex-direction: column; }
