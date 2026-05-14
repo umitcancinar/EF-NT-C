@@ -2,40 +2,35 @@ const { GoogleGenAI } = require('@google/genai');
 const db = require('../config/db');
 
 // Initialize Gemini
-const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
-const MODEL_NAME = 'gemini-1.5-flash';
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const MODEL_NAME = 'gemini-2.0-flash';
 
 exports.chat = async (req, res) => {
   try {
     const { message, history, lang } = req.body;
     
-    // Construct conversation context
     const contents = [];
     if (history && history.length > 0) {
       history.forEach(msg => {
-         contents.push({ role: msg.role === 'user' ? 'user' : 'model', parts: [{ text: msg.content || msg.text }] });
+         contents.push({ 
+           role: msg.role === 'user' ? 'user' : 'model', 
+           parts: [{ text: msg.content || msg.text }] 
+         });
       });
     }
-    
-    // Add current message
     contents.push({ role: 'user', parts: [{ text: message }] });
 
-    // System instruction
     const systemInstruction = lang === 'TR' 
         ? "Sen Erken Teşhis AI adında bir sağlık danışmanısın. Kullanıcılara tıbbi konularda genel bilgiler verirsin, ancak her zaman kesin teşhis için bir doktora görünmeleri gerektiğini belirtirsin. Türkçe ve empatik bir dille yanıt ver."
         : "You are Early Diagnosis AI, a professional health advisor. You provide general health information and analysis based on user symptoms and data. Always emphasize that your advice is a preliminary screening and not a professional medical diagnosis, and suggest seeing a doctor for official results. Be empathetic and professional.";
 
-    const model = ai.getGenerativeModel({ 
+    const result = await ai.models.generateContent({
       model: MODEL_NAME,
+      contents: contents,
       systemInstruction: systemInstruction
     });
 
-    const result = await model.generateContent({
-      contents: contents
-    });
-
-    const aiResponse = await result.response;
-    const aiMessage = aiResponse.text();
+    const aiMessage = result.text;
     
     if (req.user && req.user.userId) {
       await db.query(
@@ -53,9 +48,7 @@ exports.chat = async (req, res) => {
 
 exports.analyzeImage = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'Lütfen bir fotoğraf yükleyin.' });
-    }
+    if (!req.file) return res.status(400).json({ error: 'Lütfen bir fotoğraf yükleyin.' });
 
     const { symptoms, moodScore, lang } = req.body;
     const base64Image = req.file.buffer.toString('base64');
@@ -65,27 +58,27 @@ exports.analyzeImage = async (req, res) => {
         ? "Bir sağlık uzmanı gibi bu görüntüyü analiz et. Cilt, göz, ağız veya saçla ilgili belirgin bir sorun veya semptom var mı?"
         : "Analyze this image as a health expert. Is there any visible issue or symptom related to skin, eyes, mouth, or hair?";
     
-    if (symptoms) {
-        prompt += lang === 'TR' ? `\nKullanıcının belirttiği ek semptomlar: ${symptoms}` : `\nAdditional symptoms stated by the user: ${symptoms}`;
-    }
-    if (moodScore) {
-        prompt += lang === 'TR' ? `\nKullanıcının mod puanı (0-10): ${moodScore}` : `\nUser's mood score (0-10): ${moodScore}`;
-    }
+    if (symptoms) prompt += lang === 'TR' ? `\nEk semptomlar: ${symptoms}` : `\nAdditional symptoms: ${symptoms}`;
+    if (moodScore) prompt += lang === 'TR' ? `\nMod puanı: ${moodScore}` : `\nMood score: ${moodScore}`;
     
     prompt += lang === 'TR'
-        ? "\nDetaylı, ancak anlaşılır bir dille Türkçe olarak raporla. Unutma: Bu bir ön teşhistir, her zaman kesin karar için doktora görünmeyi tavsiye et."
-        : "\nReport in detailed but understandable English. Remember: This is a preliminary screening, always recommend seeing a doctor for a definitive decision.";
+        ? "\nTürkçe olarak detaylı raporla. Tıbbi tavsiye olmadığını belirt."
+        : "\nReport in detailed English. Mention it's not medical advice.";
 
-    const model = ai.getGenerativeModel({ model: MODEL_NAME });
-    const result = await model.generateContent([
-      { inlineData: { data: base64Image, mimeType: mimeType } },
-      prompt
-    ]);
+    const result = await ai.models.generateContent({
+      model: MODEL_NAME,
+      contents: [
+        { 
+          parts: [
+            { inlineData: { data: base64Image, mimeType: mimeType } },
+            { text: prompt }
+          ] 
+        }
+      ]
+    });
 
-    const aiResponse = await result.response;
-    const aiAnalysis = aiResponse.text();
+    const aiAnalysis = result.text;
 
-    // Save to database
     await db.query(
       'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3)',
       [req.user.userId, 'image_analysis', aiAnalysis]
@@ -101,32 +94,27 @@ exports.analyzeImage = async (req, res) => {
 exports.generateReport = async (req, res) => {
   try {
     const { lang } = req.body;
-    // Get recent health entries
     const healthResult = await db.query(
       'SELECT * FROM health_entries WHERE user_id = $1 AND date >= CURRENT_DATE - INTERVAL \'7 days\' ORDER BY date DESC',
       [req.user.userId]
     );
     
-    const entries = healthResult.rows;
-    if (entries.length === 0) {
-      return res.status(400).json({ error: lang === 'TR' ? 'Analiz edilecek yeterli veri yok.' : 'Not enough data to analyze.' });
+    if (healthResult.rows.length === 0) {
+      return res.status(400).json({ error: lang === 'TR' ? 'Veri yok.' : 'No data.' });
     }
 
-    const dataString = entries.map(e => {
-      const d = new Date(e.date).toLocaleDateString('tr-TR');
-      return lang === 'TR' 
-        ? `Tarih: ${d}, Nabız: ${e.pulse}, Tansiyon: ${e.blood_pressure}, Şeker: ${e.blood_sugar}, Ateş: ${e.body_temperature}, Uyku: ${e.sleep_hours} saat, Stres: ${e.stress_level}/10, Semptomlar: ${e.symptoms}`
-        : `Date: ${d}, Pulse: ${e.pulse}, BP: ${e.blood_pressure}, Sugar: ${e.blood_sugar}, Temp: ${e.body_temperature}, Sleep: ${e.sleep_hours}h, Stress: ${e.stress_level}/10, Symptoms: ${e.symptoms}`;
-    }).join('\n');
+    const dataString = healthResult.rows.map(e => `[${new Date(e.date).toLocaleDateString()}] Pulse:${e.pulse}, BP:${e.blood_pressure}, Symptoms:${e.symptoms}`).join('\n');
 
     const prompt = lang === 'TR'
-        ? `Kullanıcının son 7 günlük sağlık verileri aşağıdadır. Bu verileri analiz ederek detaylı bir "Haftalık Sağlık Raporu" ve "Doktor İçin Özet" oluştur. Türkçe olarak profesyonel bir dille yaz.\n\nVeriler:\n${dataString}`
-        : `Below is the user's health data for the last 7 days. Analyze this data to create a detailed "Weekly Health Report" and a "Summary for Doctor". Write in professional English.\n\nData:\n${dataString}`;
+        ? `Haftalık sağlık raporu oluştur:\n${dataString}`
+        : `Generate weekly health report:\n${dataString}`;
 
-    const model = ai.getGenerativeModel({ model: MODEL_NAME });
-    const result = await model.generateContent(prompt);
-    const aiResponse = await result.response;
-    const reportContent = aiResponse.text();
+    const result = await ai.models.generateContent({
+      model: MODEL_NAME,
+      contents: [{ role: 'user', parts: [{ text: prompt }] }]
+    });
+
+    const reportContent = result.text;
     const newReport = await db.query(
       'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3) RETURNING *',
       [req.user.userId, 'report', reportContent]
@@ -135,7 +123,7 @@ exports.generateReport = async (req, res) => {
     res.json({ report: newReport.rows[0] });
   } catch (err) {
     console.error('Report AI Error:', err);
-    res.status(500).json({ error: 'Rapor oluşturulurken hata oluştu.' });
+    res.status(500).json({ error: 'Hata.' });
   }
 };
 
@@ -147,27 +135,20 @@ exports.generateDoctorSummary = async (req, res) => {
       [req.user.userId]
     );
     
-    const entries = healthResult.rows;
-    if (entries.length === 0) {
-      return res.status(400).json({ error: lang === 'TR' ? 'Veri bulunamadı.' : 'No data found.' });
-    }
+    if (healthResult.rows.length === 0) return res.status(400).json({ error: 'No data.' });
 
-    const dataString = entries.map(e => {
-      const d = new Date(e.date).toLocaleDateString('tr-TR');
-      return lang === 'TR'
-        ? `[${d}] Nabız: ${e.pulse}, Tansiyon: ${e.blood_pressure}, Şeker: ${e.blood_sugar}, Ateş: ${e.body_temperature}, Uyku: ${e.sleep_hours}sa, Stres: ${e.stress_level}, Semptomlar: ${e.symptoms}`
-        : `[${d}] Pulse: ${e.pulse}, BP: ${e.blood_pressure}, Sugar: ${e.blood_sugar}, Temp: ${e.body_temperature}, Sleep: ${e.sleep_hours}h, Stress: ${e.stress_level}, Symptoms: ${e.symptoms}`;
-    }).join('\n');
+    const dataString = healthResult.rows.map(e => `[${new Date(e.date).toLocaleDateString()}] Pulse:${e.pulse}, Symptoms:${e.symptoms}`).join('\n');
 
     const prompt = lang === 'TR'
-        ? `Aşağıdaki verileri bir doktorun hızlıca inceleyebileceği profesyonel bir "Doktor Özet Raporu" formatına dönüştür. Kritik değişimleri vurgula, tıbbi terminolojiyi uygun kullan ama hasta için de anlaşılır olsun. Türkçe yaz.\n\nVeriler:\n${dataString}`
-        : `Transform the following data into a professional "Doctor Summary Report" format that a doctor can quickly review. Highlight critical changes, use appropriate medical terminology but keep it understandable for the patient. Write in English.\n\nData:\n${dataString}`;
+        ? `Doktor özeti oluştur:\n${dataString}`
+        : `Generate doctor summary:\n${dataString}`;
 
-    const model = ai.getGenerativeModel({ model: MODEL_NAME });
-    const result = await model.generateContent(prompt);
-    const aiResponse = await result.response;
-    const summaryContent = aiResponse.text();
+    const result = await ai.models.generateContent({
+      model: MODEL_NAME,
+      contents: [{ role: 'user', parts: [{ text: prompt }] }]
+    });
 
+    const summaryContent = result.text;
     const newReport = await db.query(
       'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3) RETURNING *',
       [req.user.userId, 'doctor_summary', summaryContent]
@@ -176,7 +157,7 @@ exports.generateDoctorSummary = async (req, res) => {
     res.json({ report: newReport.rows[0] });
   } catch (err) {
     console.error('Doctor Summary AI Error:', err);
-    res.status(500).json({ error: 'Doktor özeti oluşturulurken hata oluştu.' });
+    res.status(500).json({ error: 'Hata.' });
   }
 };
 
@@ -189,6 +170,6 @@ exports.getReports = async (req, res) => {
     res.json(reports.rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Raporlar getirilirken hata oluştu.' });
+    res.status(500).json({ error: 'Hata.' });
   }
 };
