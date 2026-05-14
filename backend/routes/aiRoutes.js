@@ -8,7 +8,7 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
-router.post('/chat', authMiddleware, aiController.chat);
+router.post('/chat', aiController.chat);
 router.post('/analyze-image', authMiddleware, upload.single('image'), aiController.analyzeImage);
 router.post('/generate-report', authMiddleware, aiController.generateReport);
 router.get('/reports', authMiddleware, aiController.getReports);

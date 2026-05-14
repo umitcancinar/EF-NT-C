@@ -33,14 +33,15 @@ exports.chat = async (req, res) => {
     });
 
     const aiMessage = response.text;
+    
+    if (req.user && req.user.userId) {
+      await db.query(
+        'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3)',
+        [req.user.userId, 'chat', `User: ${message}\nAI: ${aiMessage}`]
+      );
+    }
 
-    // Save to database
-    await db.query(
-      'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3)',
-      [req.user.userId, 'chat', `User: ${message}\nAI: ${aiMessage}`]
-    );
-
-    res.json({ reply: aiMessage });
+    res.json({ response: aiMessage });
   } catch (err) {
     console.error('Chat AI Error:', err);
     res.status(500).json({ error: 'Yapay zeka yanıt üretirken hata oluştu.' });
