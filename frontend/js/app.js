@@ -92,7 +92,7 @@ const app = {
             if (headerRegister) headerRegister.classList.remove('hidden');
             if (headerWelcome) headerWelcome.classList.add('hidden');
             document.getElementById('sidebar').classList.add('hidden');
-            if (mobileToggle) mobileToggle.style.display = 'none';
+            if (mobileToggle) mobileToggle.classList.remove('logged-in');
             if (window.location.hash !== '#landing' && window.location.hash !== '#login' && window.location.hash !== '#register') {
                 window.location.hash = '#landing';
             }
@@ -121,7 +121,7 @@ const app = {
             }
             
             const mobileToggle = document.getElementById('mobile-menu-toggle');
-            if (mobileToggle) mobileToggle.style.display = 'flex';
+            if (mobileToggle) mobileToggle.classList.add('logged-in');
             
             if (window.location.hash === '' || window.location.hash === '#login' || window.location.hash === '#register') {
                 window.location.hash = '#dashboard';
@@ -175,14 +175,14 @@ const app = {
         // Handle layout for non-auth pages
         if (hash === '#landing' || hash === '#login' || hash === '#register') {
             sidebar.classList.add('hidden');
-            if (mobileToggle) mobileToggle.style.display = 'none';
+            if (mobileToggle) mobileToggle.classList.remove('logged-in');
             document.body.classList.remove('sidebar-active');
             mainContent.style.marginLeft = '0';
             mainContent.style.width = '100%';
             mainContent.style.padding = '0';
         } else if (this.user) {
             sidebar.classList.remove('hidden');
-            if (mobileToggle && window.innerWidth <= 768) mobileToggle.style.display = 'flex';
+            if (mobileToggle) mobileToggle.classList.add('logged-in');
             document.body.classList.add('sidebar-active');
             mainContent.style.marginLeft = 'var(--sidebar-width)';
             mainContent.style.width = 'calc(100% - var(--sidebar-width))';

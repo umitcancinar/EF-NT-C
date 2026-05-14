@@ -144,10 +144,13 @@ body.sidebar-active header {
     cursor: pointer;
     color: var(--text-main);
     transition: var(--transition);
+    z-index: 1200;
 }
 
-.mobile-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
+@media (max-width: 1024px) {
+    .mobile-toggle.logged-in {
+        display: flex;
+    }
 }
 
 /* Sidebar */
@@ -874,9 +877,6 @@ h1, h2, h3 {
     }
 
     /* Mobile Menu Toggle Button */
-    .mobile-toggle {
-        display: flex;
-    }
 
     .view-section.page-header {
         flex-direction: column;
