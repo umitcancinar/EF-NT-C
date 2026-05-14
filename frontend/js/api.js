@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = window.location.origin.includes('localhost') ? 'http://localhost:3000/api' : '/api';
 
 const api = {
     async request(endpoint, options = {}) {

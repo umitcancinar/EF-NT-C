@@ -1,0 +1,105 @@
+const i18n = {
+    currentLang: localStorage.getItem('lang') || 'TR',
+    
+    translations: {
+        TR: {
+            nav_home: "Ana Sayfa",
+            nav_how: "Nasıl Çalışır",
+            nav_login: "Giriş Yap",
+            nav_register: "Kayıt Ol",
+            hero_title: "Geleceğin Sağlık Takibi, <br>Bugünün Teknolojisiyle.",
+            hero_desc: "Yapay zeka destekli multimodal analizler, anlık sağlık danışmanlığı ve detaylı raporlama ile sağlığınızı bir adım öteden takip edin.",
+            btn_start: "Hemen Başlayın",
+            btn_login: "Giriş Yap",
+            btn_register: "Kayıt Ol",
+            feat_1_title: "Multimodal Analiz",
+            feat_1_desc: "Cilt, göz ve ağız fotoğraflarınızı Gemini AI ile analiz edin, olası riskleri saniyeler içinde öğrenin.",
+            feat_2_title: "AI Sağlık Asistanı",
+            feat_2_desc: "7/24 aktif sağlık danışmanınızla semptomlarınız hakkında konuşun, bilinçli öneriler alın.",
+            feat_3_title: "Trend Takibi",
+            feat_3_desc: "Nabız, tansiyon ve şeker gibi kritik verilerinizi grafiklerle izleyin, sağlığınızdaki değişimi fark edin.",
+            how_title: "Nasıl Çalışır?",
+            step_1_title: "Verilerini Gir",
+            step_1_desc: "Günlük sağlık metriklerini ve semptomlarını kaydet.",
+            step_2_title: "Analiz Al",
+            step_2_desc: "Fotoğraf yükle veya AI asistanınla detaylı sohbet et.",
+            step_3_title: "Raporla",
+            step_3_desc: "Haftalık özetler ve doktor raporlarını anında oluştur.",
+            cta_title: "Hemen Ücretsiz Hesap Oluşturun",
+            login_title: "Erken Teşhis AI",
+            login_desc: "Sağlık asistanınıza giriş yapın",
+            reg_title: "Hesap Oluştur",
+            reg_desc: "Erken teşhis hayat kurtarır",
+            dashboard_title: "Gösterge Paneli",
+            dashboard_desc: "Günlük sağlık verilerinizi girin ve takip edin.",
+            btn_save: "Kaydet",
+            pulse: "Nabız (bpm)",
+            bp: "Tansiyon",
+            sugar: "Kan Şekeri",
+            temp: "Ateş (°C)",
+            sleep: "Uyku (Saat)",
+            stress: "Stres Seviyesi (1-10)",
+            symptoms: "Semptomlar / Notlar"
+        },
+        EN: {
+            nav_home: "Home",
+            nav_how: "How it Works",
+            nav_login: "Login",
+            nav_register: "Register",
+            hero_title: "Future of Health Tracking, <br>With Today's Technology.",
+            hero_desc: "Track your health one step ahead with AI-powered multimodal analysis, instant health consultancy, and detailed reporting.",
+            btn_start: "Get Started",
+            btn_login: "Login",
+            btn_register: "Register",
+            feat_1_title: "Multimodal Analysis",
+            feat_1_desc: "Analyze skin, eye, and mouth photos with Gemini AI, learn potential risks in seconds.",
+            feat_2_title: "AI Health Assistant",
+            feat_2_desc: "Talk to your 24/7 active health consultant about your symptoms and get informed suggestions.",
+            feat_3_title: "Trend Tracking",
+            feat_3_desc: "Monitor your critical data like pulse, blood pressure, and sugar with charts, notice the change in your health.",
+            how_title: "How it Works?",
+            step_1_title: "Enter Data",
+            step_1_desc: "Record your daily health metrics and symptoms.",
+            step_2_title: "Get Analysis",
+            step_2_desc: "Upload photos or have detailed chats with your AI assistant.",
+            step_3_title: "Report",
+            step_3_desc: "Instantly create weekly summaries and doctor reports.",
+            cta_title: "Create a Free Account Now",
+            login_title: "Early Diagnosis AI",
+            login_desc: "Log in to your health assistant",
+            reg_title: "Create Account",
+            reg_desc: "Early diagnosis saves lives",
+            dashboard_title: "Dashboard",
+            dashboard_desc: "Enter and track your daily health data.",
+            btn_save: "Save",
+            pulse: "Pulse (bpm)",
+            bp: "Blood Pressure",
+            sugar: "Blood Sugar",
+            temp: "Fever (°C)",
+            sleep: "Sleep (Hours)",
+            stress: "Stress Level (1-10)",
+            symptoms: "Symptoms / Notes"
+        }
+    },
+    
+    toggle() {
+        this.currentLang = this.currentLang === 'TR' ? 'EN' : 'TR';
+        localStorage.setItem('lang', this.currentLang);
+        this.apply();
+        document.getElementById('current-lang').textContent = this.currentLang;
+    },
+    
+    apply() {
+        const t = this.translations[this.currentLang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                if (el.tagName === 'INPUT' && el.type === 'placeholder') {
+                    el.placeholder = t[key];
+                } else {
+                    el.innerHTML = t[key];
+                }
+            }
+        });
+    }
+};

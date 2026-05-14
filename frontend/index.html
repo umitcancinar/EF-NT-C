@@ -13,7 +13,26 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="dark-mode">
+    <header class="glass-panel">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="#landing" class="nav-link" data-i18n="nav_home">Ana Sayfa</a>
+                <a href="#how-it-works-scroll" class="nav-link" data-i18n="nav_how">Nasıl Çalışır</a>
+            </div>
+            <div class="nav-right">
+                <button id="lang-toggle" class="toggle-btn" title="Dili Değiştir/Change Language">
+                    <i class='bx bx-globe'></i>
+                    <span id="current-lang" style="font-size: 12px; margin-left: 4px; font-weight: 600;">TR</span>
+                </button>
+                <button id="theme-toggle" class="toggle-btn" title="Tema Değiştir/Toggle Theme">
+                    <i class='bx bx-moon' id="theme-icon"></i>
+                </button>
+                <a href="#login" class="nav-link" data-i18n="nav_login" id="header-login">Giriş Yap</a>
+                <a href="#register" class="nav-link" data-i18n="nav_register" id="header-register" style="font-weight: 600;">Kayıt Ol</a>
+            </div>
+        </div>
+    </header>
     <div id="app">
         <!-- Sidebar Navigation (Hidden on Login) -->
         <nav id="sidebar" class="hidden glass-panel">
@@ -53,6 +72,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
 </body>

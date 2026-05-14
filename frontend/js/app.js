@@ -5,9 +5,35 @@ const app = {
     chartInstance: null,
 
     init() {
+        this.initTheme();
+        this.initI18n();
         this.bindEvents();
         this.checkAuth();
         window.addEventListener('hashchange', () => this.router());
+    },
+
+    initTheme() {
+        const theme = localStorage.getItem('theme') || 'dark';
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('theme-icon').className = 'bx bx-sun';
+        } else {
+            document.body.classList.remove('dark-mode');
+            document.getElementById('theme-icon').className = 'bx bx-moon';
+        }
+
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-icon').className = isDark ? 'bx bx-sun' : 'bx bx-moon';
+        });
+    },
+
+    initI18n() {
+        i18n.apply();
+        document.getElementById('lang-toggle').addEventListener('click', () => {
+            i18n.toggle();
+        });
     },
 
     bindEvents() {
@@ -106,17 +132,28 @@ const app = {
 
         this.updateNav(hash);
         viewContainer.innerHTML = ''; // Clear current view
+        
+        // Hide header if not on landing/login/register (or keep it if you want)
+        // For Apple style, keeping it subtle is better.
 
         switch (hash) {
             case '#landing':
                 if (this.user) { window.location.hash = '#dashboard'; return; }
                 viewContainer.innerHTML = this.views.landing();
                 this.initLandingView();
+                i18n.apply();
                 break;
             case '#login':
                 if (this.user) { window.location.hash = '#dashboard'; return; }
                 viewContainer.innerHTML = this.views.login();
                 this.initLoginView();
+                i18n.apply();
+                break;
+            case '#register':
+                if (this.user) { window.location.hash = '#dashboard'; return; }
+                viewContainer.innerHTML = this.views.register();
+                this.initRegisterView();
+                i18n.apply();
                 break;
             case '#dashboard':
                 viewContainer.innerHTML = this.views.dashboard();
@@ -145,74 +182,74 @@ const app = {
     // --- Views ---
     views: {
         landing: () => `
-            <div class="view-section" style="padding: 40px 20px;">
+            <div class="view-section" style="padding: 100px 20px 40px;">
                 <div class="hero">
                     <div class="logo" style="justify-content: center; border: none; margin-bottom: 40px;">
                         <i class='bx bx-pulse' style="font-size: 60px"></i>
                         <h2 style="font-size: 32px;">ErkenTeşhis<span>AI</span></h2>
                     </div>
-                    <h1>Geleceğin Sağlık Takibi, <br>Bugünün Teknolojisiyle.</h1>
-                    <p>Yapay zeka destekli multimodal analizler, anlık sağlık danışmanlığı ve detaylı raporlama ile sağlığınızı bir adım öteden takip edin.</p>
+                    <h1 data-i18n="hero_title">Geleceğin Sağlık Takibi, <br>Bugünün Teknolojisiyle.</h1>
+                    <p data-i18n="hero_desc">Yapay zeka destekli multimodal analizler, anlık sağlık danışmanlığı ve detaylı raporlama ile sağlığınızı bir adım öteden takip edin.</p>
                     <div style="display: flex; gap: 20px; justify-content: center;">
-                        <button class="btn btn-primary" style="width: auto; padding: 16px 40px;" id="start-now">Hemen Başlayın</button>
-                        <button class="btn glass-panel" style="width: auto; padding: 16px 40px;" id="hero-login">Giriş Yap</button>
+                        <button class="btn btn-primary" style="width: auto; padding: 16px 40px;" id="start-now" data-i18n="btn_start">Hemen Başlayın</button>
+                        <button class="btn btn-glass" style="width: auto; padding: 16px 40px; border: 1px solid var(--primary);" id="hero-login" data-i18n="btn_login">Giriş Yap</button>
                     </div>
                 </div>
 
                 <div class="features-grid container" style="max-width: 1200px; margin: 80px auto;">
                     <div class="glass-panel feature-card">
                         <i class='bx bx-scan'></i>
-                        <h3>Multimodal Analiz</h3>
-                        <p>Cilt, göz ve ağız fotoğraflarınızı Gemini AI ile analiz edin, olası riskleri saniyeler içinde öğrenin.</p>
+                        <h3 data-i18n="feat_1_title">Multimodal Analiz</h3>
+                        <p data-i18n="feat_1_desc">Cilt, göz ve ağız fotoğraflarınızı Gemini AI ile analiz edin, olası riskleri saniyeler içinde öğrenin.</p>
                     </div>
                     <div class="glass-panel feature-card">
                         <i class='bx bx-bot'></i>
-                        <h3>AI Sağlık Asistanı</h3>
-                        <p>7/24 aktif sağlık danışmanınızla semptomlarınız hakkında konuşun, bilinçli öneriler alın.</p>
+                        <h3 data-i18n="feat_2_title">AI Sağlık Asistanı</h3>
+                        <p data-i18n="feat_2_desc">7/24 aktif sağlık danışmanınızla semptomlarınız hakkında konuşun, bilinçli öneriler alın.</p>
                     </div>
                     <div class="glass-panel feature-card">
                         <i class='bx bx-line-chart'></i>
-                        <h3>Trend Takibi</h3>
-                        <p>Nabız, tansiyon ve şeker gibi kritik verilerinizi grafiklerle izleyin, sağlığınızdaki değişimi fark edin.</p>
+                        <h3 data-i18n="feat_3_title">Trend Takibi</h3>
+                        <p data-i18n="feat_3_desc">Nabız, tansiyon ve şeker gibi kritik verilerinizi grafiklerle izleyin, sağlığınızdaki değişimi fark edin.</p>
                     </div>
                 </div>
 
-                <div class="how-it-works container" style="max-width: 1000px; margin: 120px auto;">
-                    <h2 class="section-title">Nasıl Çalışır?</h2>
+                <div class="how-it-works container" id="how-it-works-scroll" style="max-width: 1000px; margin: 120px auto;">
+                    <h2 class="section-title" data-i18n="how_title">Nasıl Çalışır?</h2>
                     <div class="steps">
                         <div class="step">
                             <div class="step-num">1</div>
-                            <h4>Verilerini Gir</h4>
-                            <p>Günlük sağlık metriklerini ve semptomlarını kaydet.</p>
+                            <h4 data-i18n="step_1_title">Verilerini Gir</h4>
+                            <p data-i18n="step_1_desc">Günlük sağlık metriklerini ve semptomlarını kaydet.</p>
                         </div>
                         <div class="step">
                             <div class="step-num">2</div>
-                            <h4>Analiz Al</h4>
-                            <p>Fotoğraf yükle veya AI asistanınla detaylı sohbet et.</p>
+                            <h4 data-i18n="step_2_title">Analiz Al</h4>
+                            <p data-i18n="step_2_desc">Fotoğraf yükle veya AI asistanınla detaylı sohbet et.</p>
                         </div>
                         <div class="step">
                             <div class="step-num">3</div>
-                            <h4>Raporla</h4>
-                            <p>Haftalık özetler ve doktor raporlarını anında oluştur.</p>
+                            <h4 data-i18n="step_3_title">Raporla</h4>
+                            <p data-i18n="step_3_desc">Haftalık özetler ve doktor raporlarını anında oluştur.</p>
                         </div>
                     </div>
                 </div>
 
                 <div style="text-align: center; margin: 100px 0;">
-                    <h2 style="margin-bottom: 24px;">Hemen Ücretsiz Hesap Oluşturun</h2>
-                    <button class="btn btn-accent" style="width: auto; padding: 16px 60px; margin: 0 auto;" id="cta-register">Kayıt Ol</button>
+                    <h2 style="margin-bottom: 24px;" data-i18n="cta_title">Hemen Ücretsiz Hesap Oluşturun</h2>
+                    <button class="btn btn-accent" style="width: auto; padding: 16px 60px; margin: 0 auto;" id="cta-register" data-i18n="btn_register">Kayıt Ol</button>
                 </div>
             </div>
         `,
 
         login: () => `
             <div class="auth-container">
-                <div class="glass-panel auth-box">
+                <div class="glass-panel auth-box" style="margin-top: 60px;">
                     <div class="logo" style="justify-content: center; margin-bottom: 20px;">
                         <i class='bx bx-pulse' style="font-size: 40px"></i>
                     </div>
-                    <h1>Erken Teşhis AI</h1>
-                    <p>Sağlık asistanınıza giriş yapın</p>
+                    <h1 data-i18n="login_title">Erken Teşhis AI</h1>
+                    <p data-i18n="login_desc">Sağlık asistanınıza giriş yapın</p>
                     
                     <form id="login-form">
                         <div class="form-group">
@@ -235,12 +272,12 @@ const app = {
         
         register: () => `
             <div class="auth-container">
-                <div class="glass-panel auth-box">
+                <div class="glass-panel auth-box" style="margin-top: 60px;">
                     <div class="logo" style="justify-content: center; margin-bottom: 20px;">
                         <i class='bx bx-pulse' style="font-size: 40px"></i>
                     </div>
-                    <h1>Hesap Oluştur</h1>
-                    <p>Erken teşhis hayat kurtarır</p>
+                    <h1 data-i18n="reg_title">Hesap Oluştur</h1>
+                    <p data-i18n="reg_desc">Erken teşhis hayat kurtarır</p>
                     
                     <form id="register-form">
                         <div class="form-group">
@@ -267,44 +304,44 @@ const app = {
 
         dashboard: () => `
             <div class="view-section page-header">
-                <h1>Gösterge Paneli</h1>
-                <p>Günlük sağlık verilerinizi girin ve takip edin.</p>
+                <h1 data-i18n="dashboard_title">Gösterge Paneli</h1>
+                <p data-i18n="dashboard_desc">Günlük sağlık verilerinizi girin ve takip edin.</p>
             </div>
             
             <div class="dashboard-grid view-section">
                 <div class="col-8 glass-panel card">
-                    <h2 style="margin-bottom: 20px;">Yeni Veri Girişi</h2>
+                    <h2 style="margin-bottom: 20px;" data-i18n="btn_save">Yeni Veri Girişi</h2>
                     <form id="health-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="form-group">
-                            <label>Nabız (bpm)</label>
-                            <input type="number" id="h-pulse" class="form-control" placeholder="Örn: 72">
+                            <label data-i18n="pulse">Nabız (bpm)</label>
+                            <input type="number" id="h-pulse" class="form-control" placeholder="72">
                         </div>
                         <div class="form-group">
-                            <label>Tansiyon</label>
-                            <input type="text" id="h-bp" class="form-control" placeholder="Örn: 120/80">
+                            <label data-i18n="bp">Tansiyon</label>
+                            <input type="text" id="h-bp" class="form-control" placeholder="120/80">
                         </div>
                         <div class="form-group">
-                            <label>Kan Şekeri</label>
-                            <input type="number" id="h-sugar" class="form-control" placeholder="Örn: 95">
+                            <label data-i18n="sugar">Kan Şekeri</label>
+                            <input type="number" id="h-sugar" class="form-control" placeholder="95">
                         </div>
                         <div class="form-group">
-                            <label>Ateş (°C)</label>
-                            <input type="number" step="0.1" id="h-temp" class="form-control" placeholder="Örn: 36.5">
+                            <label data-i18n="temp">Ateş (°C)</label>
+                            <input type="number" step="0.1" id="h-temp" class="form-control" placeholder="36.5">
                         </div>
                         <div class="form-group">
-                            <label>Uyku (Saat)</label>
-                            <input type="number" step="0.5" id="h-sleep" class="form-control" placeholder="Örn: 7.5">
+                            <label data-i18n="sleep">Uyku (Saat)</label>
+                            <input type="number" step="0.5" id="h-sleep" class="form-control" placeholder="7.5">
                         </div>
                         <div class="form-group">
-                            <label>Stres Seviyesi (1-10)</label>
-                            <input type="number" min="1" max="10" id="h-stress" class="form-control" placeholder="Örn: 5">
+                            <label data-i18n="stress">Stres Seviyesi (1-10)</label>
+                            <input type="number" min="1" max="10" id="h-stress" class="form-control" placeholder="5">
                         </div>
                         <div class="form-group" style="grid-column: span 2;">
-                            <label>Semptomlar / Notlar</label>
-                            <input type="text" id="h-symptoms" class="form-control" placeholder="Baş ağrısı, halsizlik vb.">
+                            <label data-i18n="symptoms">Semptomlar / Notlar</label>
+                            <input type="text" id="h-symptoms" class="form-control" placeholder="...">
                         </div>
                         <div style="grid-column: span 2;">
-                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                            <button type="submit" class="btn btn-primary" data-i18n="btn_save">Kaydet</button>
                         </div>
                     </form>
                 </div>
