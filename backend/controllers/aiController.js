@@ -4,7 +4,7 @@ const db = require('../config/db');
 // Initialize Gemini
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 // Model selection: gemini-1.5-flash is standard, gemini-2.0-flash is faster but might have lower limits
-const MODEL_NAME = 'gemini-1.5-flash';
+const MODEL_NAME = 'gemini-1.5-flash-latest';
 
 exports.chat = async (req, res) => {
   try {
@@ -38,7 +38,7 @@ exports.chat = async (req, res) => {
     res.json({ response: aiMessage });
   } catch (err) {
     console.error('Chat AI Error:', err);
-    res.status(500).json({ error: 'AI Error', details: err.message });
+    res.status(500).json({ error: `AI Error: ${err.message}` });
   }
 };
 
@@ -62,7 +62,7 @@ exports.analyzeImage = async (req, res) => {
     res.json({ analysis: aiAnalysis });
   } catch (err) {
     console.error('Image AI Error:', err);
-    res.status(500).json({ error: 'Image AI Error', details: err.message });
+    res.status(500).json({ error: `Image AI Error: ${err.message}` });
   }
 };
 
@@ -92,7 +92,7 @@ exports.generateReport = async (req, res) => {
     res.json({ report: newReport.rows[0] });
   } catch (err) {
     console.error('Report AI Error:', err);
-    res.status(500).json({ error: 'Report AI Error', details: err.message });
+    res.status(500).json({ error: `Report AI Error: ${err.message}` });
   }
 };
 
@@ -122,7 +122,7 @@ exports.generateDoctorSummary = async (req, res) => {
     res.json({ report: newReport.rows[0] });
   } catch (err) {
     console.error('Doctor Summary AI Error:', err);
-    res.status(500).json({ error: 'Doctor Summary AI Error', details: err.message });
+    res.status(500).json({ error: `Doctor Summary AI Error: ${err.message}` });
   }
 };
 
