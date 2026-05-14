@@ -2,11 +2,6 @@ const db = require('./db');
 
 const initDB = async () => {
   try {
-    // Drop existing tables just in case, but cascade
-    await db.query(`DROP TABLE IF EXISTS analyses CASCADE;`);
-    await db.query(`DROP TABLE IF EXISTS health_entries CASCADE;`);
-    await db.query(`DROP TABLE IF EXISTS users CASCADE;`);
-
     const createUsersTable = `
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,

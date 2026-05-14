@@ -5,6 +5,10 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const initDB = require('./config/init');
+
+// Initialize Database
+initDB();
 
 // Middleware
 app.use(cors());
