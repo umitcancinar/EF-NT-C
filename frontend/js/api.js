@@ -57,10 +57,10 @@ const api = {
     },
 
     ai: {
-        chat: (message, history) => api.request('/ai/chat', { method: 'POST', body: JSON.stringify({ message, history }) }),
+        chat: (message, history, lang = 'TR') => api.request('/ai/chat', { method: 'POST', body: JSON.stringify({ message, history, lang }) }),
         analyzeImage: (formData) => api.request('/ai/analyze-image', { method: 'POST', body: formData }),
-        generateReport: () => api.request('/ai/generate-report', { method: 'POST' }),
-        generateDoctorSummary: () => api.request('/ai/generate-doctor-summary', { method: 'POST' }),
+        generateReport: (lang = 'TR') => api.request('/ai/generate-report', { method: 'POST', body: JSON.stringify({ lang }) }),
+        generateDoctorSummary: (lang = 'TR') => api.request('/ai/generate-doctor-summary', { method: 'POST', body: JSON.stringify({ lang }) }),
         getReports: () => api.request('/ai/reports')
     },
 

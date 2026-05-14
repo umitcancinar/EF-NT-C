@@ -1055,7 +1055,7 @@ const app = {
                 msgsContainer.appendChild(aiDiv);
                 msgsContainer.scrollTop = msgsContainer.scrollHeight;
 
-                this.chatHistory.push({ role: 'user', text });
+                this.chatHistory.push({ role: 'user', text: message });
                 this.chatHistory.push({ role: 'model', text: res.response });
             } catch (error) {
                 document.getElementById('typing-indicator')?.remove();
@@ -1107,6 +1107,7 @@ const app = {
             formData.append('image', selectedFile);
             formData.append('symptoms', document.getElementById('analysis-symptoms').value);
             formData.append('moodScore', document.getElementById('analysis-mood').value);
+            formData.append('lang', i18n.currentLang);
             
             try {
                 this.showLoader('loading_image');
@@ -1119,7 +1120,7 @@ const app = {
 
                 resultDiv.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner" style="margin: 0 auto 20px;"></div><p data-i18n="loading_analyze">Analyzing...</p></div>';
                 
-                const res = await api.ai.analyzeImage(formData);
+                const res = await api.ai.analyzeImage(formData, i18n.currentLang);
                 resultDiv.innerHTML = res.analysis.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                 this.showToast('Analysis completed');
             } catch (error) {
@@ -1175,17 +1176,27 @@ const app = {
             } catch (error) { this.showToast('Raporlar yüklenemedi', 'error'); } finally { this.hideLoader(); }
         };
         await loadReports();
-        document.getElementById('generate-report-btn').addEventListener('click', async () => {
-            try { this.showLoader(); await api.ai.generateReport(); this.showToast('Yeni rapor oluşturuldu'); await loadReports(); }
-            catch (error) { this.showToast(error.message, 'error'); } finally { this.hideLoader(); }
-        });
-        document.getElementById('generate-summary-btn').addEventListener('click', async () => {
+        
+        document.getElementById('gen-weekly-report').addEventListener('click', async () => {
             try {
-                this.showLoader();
-                await api.ai.generateDoctorSummary();
-                this.showToast('Doktor özeti oluşturuldu');
-                await loadReports();
-            } catch (error) { this.showToast(error.message, 'error'); } finally { this.hideLoader(); }
+                this.showLoader('loading_report');
+                await api.ai.generateReport(i18n.currentLang);
+                this.showToast('Report generated');
+                loadReports();
+            } catch (error) {
+                this.showToast(error.message, 'error');
+            } finally { this.hideLoader(); }
+        });
+
+        document.getElementById('gen-doctor-summary').addEventListener('click', async () => {
+            try {
+                this.showLoader('loading_report');
+                await api.ai.generateDoctorSummary(i18n.currentLang);
+                this.showToast('Doctor summary generated');
+                loadReports();
+            } catch (error) {
+                this.showToast(error.message, 'error');
+            } finally { this.hideLoader(); }
         });
     },
 
