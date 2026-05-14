@@ -60,6 +60,7 @@ const api = {
         chat: (message, history) => api.request('/ai/chat', { method: 'POST', body: JSON.stringify({ message, history }) }),
         analyzeImage: (formData) => api.request('/ai/analyze-image', { method: 'POST', body: formData }),
         generateReport: () => api.request('/ai/generate-report', { method: 'POST' }),
+        generateDoctorSummary: () => api.request('/ai/generate-doctor-summary', { method: 'POST' }),
         getReports: () => api.request('/ai/reports')
     },
 

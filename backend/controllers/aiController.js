@@ -107,8 +107,6 @@ exports.generateReport = async (req, res) => {
     });
 
     const reportContent = response.text;
-
-    // Save report
     const newReport = await db.query(
       'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3) RETURNING *',
       [req.user.userId, 'report', reportContent]
@@ -118,6 +116,43 @@ exports.generateReport = async (req, res) => {
   } catch (err) {
     console.error('Report AI Error:', err);
     res.status(500).json({ error: 'Rapor oluşturulurken hata oluştu.' });
+  }
+};
+
+exports.generateDoctorSummary = async (req, res) => {
+  try {
+    const healthResult = await db.query(
+      'SELECT * FROM health_entries WHERE user_id = $1 ORDER BY date DESC LIMIT 30',
+      [req.user.userId]
+    );
+    
+    const entries = healthResult.rows;
+    if (entries.length === 0) {
+      return res.status(400).json({ error: 'Özet oluşturmak için yeterli sağlık veriniz yok.' });
+    }
+
+    const dataString = entries.map(e => 
+      `[${e.date}] Nabız: ${e.pulse}, Tansiyon: ${e.blood_pressure}, Şeker: ${e.blood_sugar}, Ateş: ${e.body_temperature}, Uyku: ${e.sleep_hours}sa, Stres: ${e.stress_level}, Semptomlar: ${e.symptoms}`
+    ).join('\n');
+
+    const prompt = `Aşağıdaki verileri bir doktorun hızlıca inceleyebileceği profesyonel bir "Doktor Özet Raporu" formatına dönüştür. Kritik değişimleri vurgula, tıbbi terminolojiyi uygun kullan ama hasta için de anlaşılır olsun. Türkçe yaz.\n\nVeriler:\n${dataString}`;
+
+    const response = await ai.models.generateContent({
+      model: MODEL_NAME,
+      contents: prompt
+    });
+
+    const summaryContent = response.text;
+
+    const newReport = await db.query(
+      'INSERT INTO analyses (user_id, type, content) VALUES ($1, $2, $3) RETURNING *',
+      [req.user.userId, 'doctor_summary', summaryContent]
+    );
+
+    res.json({ report: newReport.rows[0] });
+  } catch (err) {
+    console.error('Doctor Summary AI Error:', err);
+    res.status(500).json({ error: 'Doktor özeti oluşturulurken hata oluştu.' });
   }
 };
 

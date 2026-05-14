@@ -966,9 +966,9 @@ const app = {
         document.getElementById('generate-summary-btn').addEventListener('click', async () => {
             try {
                 this.showLoader();
-                const res = await api.ai.chat("Lütfen şimdiye kadarki verilerime dayanarak bir 'Doktora Özet Raporu' hazırla. Kronolojik olarak önemli bulguları ve dikkat edilmesi gerekenleri maddeler halinde yaz.", this.chatHistory);
+                await api.ai.generateDoctorSummary();
                 this.showToast('Doktor özeti oluşturuldu');
-                await loadReports(); // Summary might be saved if we update backend to save it
+                await loadReports();
             } catch (error) { this.showToast(error.message, 'error'); } finally { this.hideLoader(); }
         });
     },

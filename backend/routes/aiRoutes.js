@@ -11,6 +11,7 @@ const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } 
 router.post('/chat', aiController.chat);
 router.post('/analyze-image', authMiddleware, upload.single('image'), aiController.analyzeImage);
 router.post('/generate-report', authMiddleware, aiController.generateReport);
+router.post('/generate-doctor-summary', authMiddleware, aiController.generateDoctorSummary);
 router.get('/reports', authMiddleware, aiController.getReports);
 
 module.exports = router;
