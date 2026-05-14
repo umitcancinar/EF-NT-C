@@ -190,9 +190,8 @@ const app = {
         }
 
         // Close sidebar on mobile after route change
-        const sidebar = document.getElementById('sidebar');
         const sidebarOverlay = document.getElementById('sidebar-overlay');
-        if (sidebar.classList.contains('show')) {
+        if (sidebar && sidebar.classList.contains('show')) {
             sidebar.classList.remove('show');
             sidebarOverlay.classList.remove('show');
         }
