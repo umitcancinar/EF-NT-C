@@ -558,8 +558,8 @@ const app = {
             msgsContainer.innerHTML = '';
             this.chatHistory.forEach(msg => {
                 const div = document.createElement('div');
-                div.className = \`message \${msg.role === 'user' ? 'msg-user' : 'msg-ai'}\`;
-                div.innerHTML = msg.text.replace(/\\n/g, '<br>');
+                div.className = `message ${msg.role === 'user' ? 'msg-user' : 'msg-ai'}`;
+                div.innerHTML = msg.text.replace(/\n/g, '<br>');
                 msgsContainer.appendChild(div);
             });
             msgsContainer.scrollTop = msgsContainer.scrollHeight;
@@ -594,7 +594,7 @@ const app = {
                 const aiDiv = document.createElement('div');
                 aiDiv.className = 'message msg-ai';
                 // Convert markdown-like response roughly
-                aiDiv.innerHTML = res.reply.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
+                aiDiv.innerHTML = res.reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                 msgsContainer.appendChild(aiDiv);
                 msgsContainer.scrollTop = msgsContainer.scrollHeight;
 
@@ -669,7 +669,7 @@ const app = {
                 this.showLoader();
                 resultDiv.innerHTML = '<div class="spinner"></div> Analiz ediliyor... Lütfen bekleyin.';
                 const res = await api.ai.analyzeImage(formData);
-                resultDiv.innerHTML = res.analysis.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
+                resultDiv.innerHTML = res.analysis.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                 this.showToast('Analiz tamamlandı');
             } catch (error) {
                 resultDiv.innerHTML = 'Hata: ' + error.message;
@@ -692,17 +692,17 @@ const app = {
                     return;
                 }
 
-                list.innerHTML = reports.map(r => \`
+                list.innerHTML = reports.map(r => `
                     <div style="background: rgba(0,0,0,0.2); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: var(--text-muted);">
-                            <span><i class='bx bx-time'></i> \${new Date(r.created_at).toLocaleString('tr-TR')}</span>
-                            <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">\${r.type === 'report' ? 'Haftalık Rapor' : 'Görsel Analiz'}</span>
+                            <span><i class='bx bx-time'></i> ${new Date(r.created_at).toLocaleString('tr-TR')}</span>
+                            <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">${r.type === 'report' ? 'Haftalık Rapor' : 'Görsel Analiz'}</span>
                         </div>
                         <div style="line-height: 1.6;">
-                            \${r.content.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')}
+                            ${r.content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
                         </div>
                     </div>
-                \`).join('');
+                `).join('');
             } catch (error) {
                 this.showToast('Raporlar yüklenemedi', 'error');
             } finally {
