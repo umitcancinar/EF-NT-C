@@ -513,56 +513,47 @@ const app = {
 
         faceId: () => `
             <div class="view-section page-header" style="text-align: center;">
-                <h1 data-i18n="nav_face_id">Otomatik Yüz Analizi</h1>
-                <p>Cihaz kamerası ile temassız, anlık sağlık taraması.</p>
+                <h1 data-i18n="nav_face_id">Yüz Tanıma Erişimi</h1>
+                <p>Arka planda otomatik sağlık taraması için izin verin.</p>
             </div>
             
             <div class="view-section" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh;">
-                <div class="glass-panel" style="padding: 40px; text-align: center; max-width: 600px; border-radius: 30px; border: 2px solid var(--primary); position: relative; overflow: hidden;">
-                    <div id="camera-simulation" style="width: 100%; height: 300px; background: #000; border-radius: 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; position: relative;">
-                        <i class='bx bx-camera' style="font-size: 60px; color: rgba(255,255,255,0.2);"></i>
-                        <div class="scan-line"></div>
-                        <div style="position: absolute; top: 20px; left: 20px; color: #ff453a; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 6px;">
-                            <span style="width: 8px; height: 8px; background: #ff453a; border-radius: 50%; animation: blink 1s infinite;"></span> REC
-                        </div>
+                <div class="glass-panel" style="padding: 50px; text-align: center; max-width: 600px; border-radius: 35px; border: 1px solid var(--border); background: rgba(255,255,255,0.02);">
+                    <div style="font-size: 70px; margin-bottom: 24px; color: var(--primary); animation: float 3s ease-in-out infinite;">
+                        <i class='bx bx-face'></i>
                     </div>
-                    
-                    <h2 style="margin-bottom: 16px;">Otomatik Görüntü Yakalama</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 32px; line-height: 1.6;">
-                        Sistem yüzünüzü otomatik olarak algılar ve cilt tonu, göz akı rengi gibi metrikleri analiz etmek için yüksek çözünürlüklü kareler yakalar.
+                    <h2 style="margin-bottom: 20px;">Akıllı Arka Plan Taraması</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 40px; line-height: 1.7; font-size: 15px;">
+                        Bu özelliği etkinleştirdiğinizde, cihaz kamerası bir yüz algıladığı her an arka planda otomatik olarak düşük güç tüketimli bir görüntü alır ve AI modelimize analiz ettirir. Bu sayede manuel giriş yapmanıza gerek kalmadan sağlık trendleriniz takip edilir.
                     </p>
                     
-                    <button class="btn btn-primary" id="start-camera-demo" style="width: auto; padding: 12px 32px;">
-                        <i class='bx bx-play-circle'></i> Kamerayı Başlat (Demo)
-                    </button>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 20px 30px; border-radius: 20px; width: 100%;">
+                        <div style="text-align: left;">
+                            <div style="font-weight: 600; font-size: 16px;">Otomatik Analiz İzni</div>
+                            <div style="font-size: 13px; color: var(--text-muted);">Her yüz algılandığında tara</div>
+                        </div>
+                        <label class="apple-switch">
+                            <input type="checkbox" id="face-recognition-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
                     
-                    <div style="margin-top: 20px;">
-                        <span style="background: rgba(40, 205, 65, 0.1); color: var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
-                            <i class='bx bx-check-shield'></i> Gizlilik Odaklı Analiz
-                        </span>
+                    <div style="margin-top: 30px; font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; justify-content: center;">
+                        <i class='bx bx-lock-alt'></i> Verileriniz Secure Enclave ile korunur.
                     </div>
                 </div>
             </div>
             
             <style>
-                .scan-line {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 2px;
-                    background: var(--primary);
-                    box-shadow: 0 0 15px var(--primary);
-                    animation: scan 3s linear infinite;
-                }
-                @keyframes scan {
-                    0% { top: 0; }
-                    100% { top: 100%; }
-                }
-                @keyframes blink {
-                    0% { opacity: 1; }
-                    50% { opacity: 0; }
-                    100% { opacity: 1; }
+                .apple-switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+                .apple-switch input { opacity: 0; width: 0; height: 0; }
+                .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #39393d; transition: .4s; border-radius: 34px; }
+                .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+                input:checked + .slider { background-color: #34c759; }
+                input:checked + .slider:before { transform: translateX(22px); }
+                @keyframes float {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-10px); }
                 }
             </style>
         `,
@@ -588,28 +579,42 @@ const app = {
 
         analysis: () => `
             <div class="view-section page-header">
-                <h1 data-i18n="nav_analysis">Görsel Analiz</h1>
-                <p>Cilt, göz, ağız veya saçınızla ilgili bir fotoğraf yükleyerek ön teşhis alın.</p>
+                <h1 data-i18n="nav_analysis">Manuel Analiz</h1>
+                <p>Fotoğraf yükleyerek, semptomlarınızı belirterek ve modunuzu puanlayarak detaylı teşhis alın.</p>
             </div>
             
             <div class="dashboard-grid view-section">
                 <div class="col-6">
                     <div class="glass-panel card">
-                        <h2 style="margin-bottom: 20px;">Fotoğraf Yükle</h2>
-                        <div class="upload-area" id="drop-zone">
+                        <h2 style="margin-bottom: 20px;">Verileri Hazırla</h2>
+                        <div class="upload-area" id="drop-zone" style="margin-bottom: 24px;">
                             <i class='bx bx-cloud-upload upload-icon'></i>
                             <p>Fotoğrafı buraya sürükleyin veya seçmek için tıklayın</p>
                             <input type="file" id="file-input" class="hidden" accept="image/*">
                         </div>
-                        <img id="image-preview" style="max-width: 100%; margin-top: 20px; border-radius: 8px; display: none;">
-                        <button id="analyze-btn" class="btn btn-primary" style="margin-top: 20px; display: none; width: 100%;">Analiz Et</button>
+                        <img id="image-preview" style="max-width: 100%; margin-bottom: 24px; border-radius: 12px; display: none;">
+                        
+                        <div class="form-group">
+                            <label>Semptomlar / Şikayetiniz</label>
+                            <textarea id="analysis-symptoms" class="form-control" rows="3" placeholder="Örn: Gözlerimde kızarıklık ve kaşıntı var..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Mod Puanı (0 - 10)</label>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <input type="range" id="analysis-mood" min="0" max="10" step="1" value="5" style="flex: 1;">
+                                <span id="mood-val" style="font-weight: 700; color: var(--primary); font-size: 18px;">5</span>
+                            </div>
+                        </div>
+
+                        <button id="analyze-btn" class="btn btn-primary" style="margin-top: 20px; width: 100%; display: none;">Analiz Et</button>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="glass-panel card" style="height: 100%;">
                         <h2 style="margin-bottom: 20px;">Analiz Sonucu</h2>
-                        <div id="analysis-result" style="line-height: 1.6; color: var(--text-muted);">
-                            Fotoğraf yükledikten sonra analiz sonucu burada görüntülenecektir.
+                        <div id="analysis-result" style="line-height: 1.7; color: var(--text-muted);">
+                            Verileri tamamladıktan sonra analiz sonucu burada görüntülenecektir.
                         </div>
                     </div>
                 </div>
@@ -1033,10 +1038,19 @@ const app = {
             reader.readAsDataURL(file);
         };
 
+        const moodInput = document.getElementById('analysis-mood');
+        const moodVal = document.getElementById('mood-val');
+        if (moodInput) {
+            moodInput.addEventListener('input', (e) => moodVal.textContent = e.target.value);
+        }
+
         analyzeBtn.addEventListener('click', async () => {
             if (!selectedFile) return;
             const formData = new FormData();
             formData.append('image', selectedFile);
+            formData.append('symptoms', document.getElementById('analysis-symptoms').value);
+            formData.append('moodScore', document.getElementById('analysis-mood').value);
+            
             try {
                 this.showLoader();
                 resultDiv.innerHTML = '<div class="spinner"></div> Analiz ediliyor...';
@@ -1123,8 +1137,18 @@ const app = {
     },
 
     initFaceIdView() {
-        console.log('Face ID Demo View Initialized');
-        // Future biometric integration logic goes here
+        const toggle = document.getElementById('face-recognition-toggle');
+        if (toggle) {
+            // Restore state from localStorage
+            const isEnabled = localStorage.getItem('faceRecognitionEnabled') === 'true';
+            toggle.checked = isEnabled;
+            
+            toggle.addEventListener('change', (e) => {
+                const enabled = e.target.checked;
+                localStorage.setItem('faceRecognitionEnabled', enabled);
+                this.showToast(enabled ? 'Yüz tanıma arka plan analizi etkinleştirildi' : 'Arka plan analizi devre dışı bırakıldı');
+            });
+        }
     }
 };
 

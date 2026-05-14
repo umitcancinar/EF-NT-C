@@ -54,10 +54,14 @@ exports.analyzeImage = async (req, res) => {
       return res.status(400).json({ error: 'Lütfen bir fotoğraf yükleyin.' });
     }
 
+    const { symptoms, moodScore } = req.body;
     const base64Image = req.file.buffer.toString('base64');
     const mimeType = req.file.mimetype;
     
-    const prompt = "Bir sağlık uzmanı gibi bu görüntüyü analiz et. Cilt, göz, ağız veya saçla ilgili belirgin bir sorun veya semptom var mı? Detaylı, ancak anlaşılır bir dille Türkçe olarak raporla. Unutma: Bu bir ön teşhistir, her zaman kesin karar için doktora görünmeyi tavsiye et.";
+    let prompt = "Bir sağlık uzmanı gibi bu görüntüyü analiz et. Cilt, göz, ağız veya saçla ilgili belirgin bir sorun veya semptom var mı?";
+    if (symptoms) prompt += `\nKullanıcının belirttiği ek semptomlar: ${symptoms}`;
+    if (moodScore) prompt += `\nKullanıcının mod puanı (0-10): ${moodScore}`;
+    prompt += "\nDetaylı, ancak anlaşılır bir dille Türkçe olarak raporla. Unutma: Bu bir ön teşhistir, her zaman kesin karar için doktora görünmeyi tavsiye et.";
 
     const response = await ai.models.generateContent({
       model: MODEL_NAME,
