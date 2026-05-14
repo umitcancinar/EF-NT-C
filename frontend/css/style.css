@@ -577,21 +577,66 @@ body.sidebar-active header {
 #loader {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(2, 6, 23, 0.8);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px; /* Fixed width to prevent shifting */
+}
+
 .spinner {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-left-color: var(--primary);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    margin-bottom: 24px;
+}
+
+#loader-message {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    min-height: 20px;
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 1px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%;
+    background: var(--primary);
+    animation: progressMove 2s infinite ease-in-out;
+}
+
+@keyframes progressMove {
+    0% { left: -50%; }
+    100% { left: 100%; }
 }
 
 @keyframes spin {
