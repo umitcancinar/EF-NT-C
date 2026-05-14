@@ -523,9 +523,15 @@ const app = {
                         <i class='bx bx-face'></i>
                     </div>
                     <h2 style="margin-bottom: 20px;" data-i18n="face_header">Smart Background Scanning</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 40px; line-height: 1.7; font-size: 15px;" data-i18n="face_desc">
+                    <p style="color: var(--text-muted); margin-bottom: 30px; line-height: 1.7; font-size: 15px;" data-i18n="face_desc">
                         When enabled, the device camera automatically takes a low-power image whenever a face is detected in the background and sends it for AI analysis.
                     </p>
+                    
+                    <div style="margin-bottom: 35px;">
+                        <span class="badge" style="background: rgba(0, 113, 227, 0.1); color: var(--primary); padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 13px;" data-i18n="demo_stage">
+                            Currently in Demo Stage
+                        </span>
+                    </div>
                     
                     <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 20px 30px; border-radius: 20px; width: 100%;">
                         <div style="text-align: left;">

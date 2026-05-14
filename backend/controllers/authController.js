@@ -9,7 +9,7 @@ exports.register = async (req, res) => {
     // Check if user exists
     const userExists = await db.query('SELECT * FROM users WHERE email = $1 OR username = $2', [email, username]);
     if (userExists.rows.length > 0) {
-      return res.status(400).json({ error: 'Kullanıcı adı veya e-posta zaten kullanımda.' });
+      return res.status(400).json({ error: 'Username or email already in use.' });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -25,7 +25,7 @@ exports.register = async (req, res) => {
     res.status(201).json({ user: newUser.rows[0], token });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Kayıt sırasında bir hata oluştu.' });
+    res.status(500).json({ error: 'An error occurred during registration.' });
   }
 };
 
@@ -35,14 +35,14 @@ exports.login = async (req, res) => {
     
     const userResult = await db.query('SELECT * FROM users WHERE email = $1', [email]);
     if (userResult.rows.length === 0) {
-      return res.status(400).json({ error: 'Geçersiz e-posta veya şifre.' });
+      return res.status(400).json({ error: 'Invalid email or password.' });
     }
 
     const user = userResult.rows[0];
     const validPassword = await bcrypt.compare(password, user.password_hash);
     
     if (!validPassword) {
-      return res.status(400).json({ error: 'Geçersiz e-posta veya şifre.' });
+      return res.status(400).json({ error: 'Invalid email or password.' });
     }
 
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
