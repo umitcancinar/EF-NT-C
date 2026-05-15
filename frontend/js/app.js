@@ -847,22 +847,25 @@ const app = {
             try {
                 const entries = await api.health.getEntries();
                 const list = document.getElementById('data-history-list');
-                list.innerHTML = entries.slice(0, 5).map(e => `
-                    <tr>
-                        <td>${new Date(e.date).toLocaleDateString('tr-TR')}</td>
-                        <td>${e.pulse || '-'}</td>
-                        <td>${e.blood_pressure || '-'}</td>
-                        <td>${e.stress_level || '-'}</td>
-                        <td>${e.mood_score || '-'}</td>
-                    </tr>
-                `).join('');
+                if (list) {
+                    list.innerHTML = entries.slice(0, 5).map(e => `
+                        <tr>
+                            <td>${new Date(e.date).toLocaleDateString('tr-TR')}</td>
+                            <td>${e.pulse || '-'}</td>
+                            <td>${e.blood_pressure || '-'}</td>
+                            <td>${e.stress_level || '-'}</td>
+                            <td>${e.mood_score || '-'}</td>
+                        </tr>
+                    `).join('');
+                }
             } catch (error) { console.error(error); }
         };
 
         await loadHistory();
 
         const form = document.getElementById('health-form');
-        form.addEventListener('submit', async (e) => {
+        if (form) {
+            form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = {
                 pulse: document.getElementById('h-pulse').value || null,
