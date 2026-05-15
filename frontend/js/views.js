@@ -1,7 +1,7 @@
 // ═══ EFİNTİC VIEW TEMPLATES ═══
 const views = {
 landing(t) {
-return `<div class="view-section" style="margin-left:calc(-1 * var(--sidebar-width));width:calc(100% + var(--sidebar-width));">
+return `<div class="view-section">
 <div class="landing-container">
 <div class="hero">
   <h1 data-i18n="hero_title">${t.hero_title}</h1>

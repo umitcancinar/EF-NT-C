@@ -79,10 +79,7 @@ function updateUI() {
     welcomeEl.textContent = t.welcome_user + (currentUser.full_name || currentUser.username) + '!';
     document.getElementById('nav-username').textContent = currentUser.username;
     document.body.classList.add('sidebar-active');
-    mainContent.style.marginLeft = 'var(--sidebar-width)';
-    mainContent.style.width = 'calc(100% - var(--sidebar-width))';
     mobileToggle.classList.add('logged-in');
-    if (window.innerWidth <= 768) { mainContent.style.marginLeft = '0'; mainContent.style.width = '100%'; }
   } else {
     sidebar.classList.add('hidden');
     headerLogin.classList.remove('hidden');
@@ -90,8 +87,6 @@ function updateUI() {
     landingLinks.classList.remove('hidden');
     welcomeEl.classList.add('hidden');
     document.body.classList.remove('sidebar-active');
-    mainContent.style.marginLeft = '0';
-    mainContent.style.width = '100%';
     mobileToggle.classList.remove('logged-in');
   }
 }
