@@ -4,8 +4,8 @@ const router = express.Router();
 // ─── News (Using free RSS/API proxy) ───
 router.get('/latest', async (req, res) => {
   try {
-    // Use GNews API (free tier: 100 req/day)
-    const response = await fetch('https://gnews.io/api/v4/top-headlines?category=business&lang=tr&country=tr&max=8&apikey=demo');
+    const apiKey = process.env.GNEWS_API_KEY || '775a2d658238686e0887103759902633';
+    const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=business&lang=tr&country=tr&max=8&apikey=${apiKey}`);
     
     if (response && response.ok) {
       const data = await response.json();
