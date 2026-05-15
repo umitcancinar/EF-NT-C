@@ -7,22 +7,23 @@ router.get('/latest', async (req, res) => {
     // Use GNews API (free tier: 100 req/day)
     const response = await fetch('https://gnews.io/api/v4/top-headlines?category=business&lang=tr&country=tr&max=8&apikey=demo');
     
-    if (response.ok) {
+    if (response && response.ok) {
       const data = await response.json();
-      const articles = (data.articles || []).map(a => ({
-        title: a.title,
-        description: a.description,
-        source: a.source?.name || 'Unknown',
-        url: a.url,
-        image: a.image,
-        publishedAt: a.publishedAt
-      }));
-      return res.json(articles);
+      if (data && data.articles) {
+        const articles = data.articles.map(a => ({
+          title: a.title,
+          description: a.description,
+          source: a.source?.name || 'Unknown',
+          url: a.url,
+          image: a.image,
+          publishedAt: a.publishedAt
+        }));
+        return res.json(articles);
+      }
     }
-    
-    // Fallback: Return curated mock news
-    throw new Error('API unavailable');
+    throw new Error('Fallback needed');
   } catch (err) {
+    console.log('News API error, using fallback');
     // Fallback mock business news
     res.json([
       {
