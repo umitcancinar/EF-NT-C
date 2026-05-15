@@ -6,7 +6,6 @@ exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
-    // Check if user exists
     const userExists = await db.query('SELECT * FROM users WHERE email = $1 OR username = $2', [email, username]);
     if (userExists.rows.length > 0) {
       return res.status(400).json({ error: 'Username or email already in use.' });
@@ -16,7 +15,7 @@ exports.register = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, salt);
 
     const newUser = await db.query(
-      'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username, email, role',
+      'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username, email, role, profile_completed',
       [username, email, passwordHash]
     );
 
@@ -48,24 +47,24 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.json({
-      user: { id: user.id, username: user.username, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        full_name: user.full_name,
+        company_name: user.company_name,
+        sector: user.sector,
+        country: user.country,
+        city: user.city,
+        capital_range: user.capital_range,
+        experience: user.experience,
+        profile_completed: user.profile_completed
+      },
       token
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Giriş sırasında bir hata oluştu.' });
-  }
-};
-
-exports.getMe = async (req, res) => {
-  try {
-    const userResult = await db.query('SELECT id, username, email, role, created_at FROM users WHERE id = $1', [req.user.userId]);
-    if (userResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
-    }
-    res.json(userResult.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Kullanıcı bilgileri alınırken hata oluştu.' });
+    res.status(500).json({ error: 'An error occurred during login.' });
   }
 };

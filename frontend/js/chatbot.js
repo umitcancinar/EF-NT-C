@@ -5,24 +5,24 @@
 
     const API_URL = window.location.origin.includes('localhost') ? 'http://localhost:3000/api' : '/api';
     
-    // Character SVG
+    // Character SVG — Finance themed (blue/orange gradient)
     const charSvg = `
     <div class="chatbot-char" id="chatbotChar">
         <svg viewBox="0 0 80 80" fill="none">
             <defs>
                 <linearGradient id="cCharGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#28cd41"/>
-                    <stop offset="100%" stop-color="#1a8e2c"/>
+                    <stop offset="0%" stop-color="#0071e3"/>
+                    <stop offset="100%" stop-color="#5856d6"/>
                 </linearGradient>
             </defs>
             <path d="M40 8C58 8 73 18 76 36C79 54 68 72 52 78C42 81 30 80 20 74C10 68 4 54 6 36C8 20 22 8 40 8Z" fill="url(#cCharGrad)"/>
             
-            <!-- Doctor Hat -->
-            <path d="M25 15 Q40 5 55 15 L55 22 Q40 12 25 22 Z" fill="white" stroke="#ddd" stroke-width="0.5"/>
-            <path d="M37 12 H43 M40 9 V15" stroke="#ff3b30" stroke-width="2" stroke-linecap="round"/>
+            <!-- Chart Hat -->
+            <path d="M22 18 L30 10 L38 16 L46 6 L54 14 L58 18 Z" fill="#ff9500" stroke="#e08600" stroke-width="0.5"/>
+            <path d="M25 18 H55" stroke="#ff9500" stroke-width="2" stroke-linecap="round"/>
 
-            <g class="h-arm-l" style="transform-origin:10px 44px;"><path d="M8 42Q-2 34 0 26" stroke="#146d22" stroke-width="5" stroke-linecap="round" fill="none"/></g>
-            <g class="h-arm-r" style="transform-origin:70px 44px;"><path d="M72 42Q82 34 80 26" stroke="#146d22" stroke-width="5" stroke-linecap="round" fill="none"/></g>
+            <g class="h-arm-l" style="transform-origin:10px 44px;"><path d="M8 42Q-2 34 0 26" stroke="#0055aa" stroke-width="5" stroke-linecap="round" fill="none"/></g>
+            <g class="h-arm-r" style="transform-origin:70px 44px;"><path d="M72 42Q82 34 80 26" stroke="#0055aa" stroke-width="5" stroke-linecap="round" fill="none"/></g>
             <ellipse class="h-eye" cx="28" cy="36" rx="7" ry="9" fill="white"/>
             <circle class="h-pupil" cx="28" cy="36" r="4" fill="#1D1D1F"/>
             <ellipse class="h-eye" cx="52" cy="36" rx="7" ry="9" fill="white"/>
@@ -36,7 +36,7 @@
     <div class="chatbot-window" id="chatbotWindow" role="dialog" aria-hidden="true">
         <div class="chatbot-header">
             <div class="chatbot-header-info">
-                <div class="chatbot-avatar">🏥</div>
+                <div class="chatbot-avatar">📈</div>
                 <div>
                     <div class="chatbot-header-title" id="cb-title"></div>
                     <div class="chatbot-header-status" id="cb-status"></div>
@@ -45,7 +45,6 @@
             <button class="chatbot-close-btn" id="chatbotCloseBtn">✕</button>
         </div>
         <div class="chatbot-messages" id="chatbotMessages"></div>
-        <div class="chatbot-quick-replies" id="chatbotQuickReplies"></div>
         <div class="chatbot-input-row">
             <input type="text" class="chatbot-input" id="chatbotInput">
             <button class="chatbot-send-btn" id="chatbotSendBtn">➤</button>
@@ -58,7 +57,6 @@
     const messages = document.getElementById('chatbotMessages');
     const input = document.getElementById('chatbotInput');
     const sendBtn = document.getElementById('chatbotSendBtn');
-    const quickRepliesEl = document.getElementById('chatbotQuickReplies');
 
     // Pupil tracking
     const pupils = toggle.querySelectorAll('.h-pupil');
@@ -86,7 +84,7 @@
         const div = document.createElement('div');
         div.className = 'chatbot-msg ' + (isUser ? 'user' : 'bot');
         div.innerHTML = `
-            <div class="chatbot-msg-avatar">${isUser ? '👤' : '🤖'}</div>
+            <div class="chatbot-msg-avatar">${isUser ? '👤' : '📈'}</div>
             <div class="chatbot-msg-bubble">${text}</div>
         `;
         messages.appendChild(div);
@@ -118,10 +116,7 @@
             const res = await fetch(`${API_URL}/ai/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    message: text,
-                    lang: i18n.currentLang
-                })
+                body: JSON.stringify({ message: text, lang: i18n.currentLang })
             });
             const data = await res.json();
             hideTyping();
@@ -155,25 +150,11 @@
         });
     }
 
-    if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            windowEl.classList.remove('open');
-        });
-    }
-
-    // Close on outside click
+    if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); windowEl.classList.remove('open'); });
     document.addEventListener('click', (e) => {
-        if (windowEl && windowEl.classList.contains('open') && !windowEl.contains(e.target) && !toggle.contains(e.target)) {
-            windowEl.classList.remove('open');
-        }
+        if (windowEl && windowEl.classList.contains('open') && !windowEl.contains(e.target) && !toggle.contains(e.target)) windowEl.classList.remove('open');
     });
-
-    if (windowEl) {
-        // Prevent clicks inside window from closing it
-        windowEl.addEventListener('click', (e) => e.stopPropagation());
-    }
-
+    if (windowEl) windowEl.addEventListener('click', (e) => e.stopPropagation());
     if (sendBtn) sendBtn.addEventListener('click', () => processMessage(input.value));
     if (input) input.addEventListener('keydown', (e) => { if (e.key === 'Enter') processMessage(input.value); });
 
@@ -186,8 +167,6 @@
         if (title) title.textContent = t.chat_title;
         if (status) status.textContent = t.chat_status;
         if (inputEl) inputEl.placeholder = t.chat_placeholder;
-
-        // If there are only greeting messages (and no user interaction), refresh them
         const msgs = messages.querySelectorAll('.chatbot-msg.bot');
         const userMsgs = messages.querySelectorAll('.chatbot-msg.user');
         if (userMsgs.length === 0 && msgs.length > 0) {
@@ -196,5 +175,4 @@
             addMsg(t.chat_greet_2, false);
         }
     });
-
 })();

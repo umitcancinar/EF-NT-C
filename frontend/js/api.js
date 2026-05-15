@@ -1,75 +1,36 @@
 const API_URL = window.location.origin.includes('localhost') ? 'http://localhost:3000/api' : '/api';
 
 const api = {
-    async request(endpoint, options = {}) {
-        const token = localStorage.getItem('token');
-        
-        const headers = {
-            ...options.headers
-        };
+    token: localStorage.getItem('token'),
 
-        // Eğer FormData değilse Content-Type ekle
-        if (!(options.body instanceof FormData)) {
-            headers['Content-Type'] = 'application/json';
-        }
-
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
-
-        try {
-            const response = await fetch(`${API_URL}${endpoint}`, {
-                ...options,
-                headers
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                if (response.status === 401) {
-                    localStorage.removeItem('token');
-                    window.location.hash = '#login';
-                }
-                throw new Error(data.error || 'Bir hata oluştu');
-            }
-
-            return data;
-        } catch (error) {
-            throw error;
-        }
+    headers() {
+        const h = { 'Content-Type': 'application/json' };
+        if (this.token) h['Authorization'] = `Bearer ${this.token}`;
+        return h;
     },
 
-    auth: {
-        login: (credentials) => api.request('/auth/login', { method: 'POST', body: JSON.stringify(credentials) }),
-        register: (userData) => api.request('/auth/register', { method: 'POST', body: JSON.stringify(userData) }),
-        getMe: () => api.request('/auth/me')
+    async post(endpoint, data) {
+        const res = await fetch(`${API_URL}${endpoint}`, { method: 'POST', headers: this.headers(), body: JSON.stringify(data) });
+        if (res.status === 401) { localStorage.removeItem('token'); location.hash = '#login'; }
+        return res.json();
     },
 
-    health: {
-        addEntry: (data) => api.request('/health', { method: 'POST', body: JSON.stringify(data) }),
-        getEntries: () => api.request('/health')
+    async get(endpoint) {
+        const res = await fetch(`${API_URL}${endpoint}`, { headers: this.headers() });
+        if (res.status === 401) { localStorage.removeItem('token'); location.hash = '#login'; }
+        return res.json();
     },
 
-    user: {
-        getProfile: () => api.request('/user/profile'),
-        updateProfile: (data) => api.request('/user/profile', { method: 'PUT', body: JSON.stringify(data) }),
-        changePassword: (data) => api.request('/user/change-password', { method: 'PUT', body: JSON.stringify(data) })
+    async put(endpoint, data) {
+        const res = await fetch(`${API_URL}${endpoint}`, { method: 'PUT', headers: this.headers(), body: JSON.stringify(data) });
+        return res.json();
     },
 
-    ai: {
-        chat: (message, history, lang = i18n.currentLang) => api.request('/ai/chat', { method: 'POST', body: JSON.stringify({ message, history, lang }) }),
-        analyzeImage: (formData) => {
-            formData.append('lang', i18n.currentLang);
-            return api.request('/ai/analyze-image', { method: 'POST', body: formData });
-        },
-        generateReport: (lang = i18n.currentLang) => api.request('/ai/generate-report', { method: 'POST', body: JSON.stringify({ lang }) }),
-        generateDoctorSummary: (lang = i18n.currentLang) => api.request('/ai/generate-doctor-summary', { method: 'POST', body: JSON.stringify({ lang }) }),
-        getReports: () => api.request('/ai/reports')
+    async del(endpoint) {
+        const res = await fetch(`${API_URL}${endpoint}`, { method: 'DELETE', headers: this.headers() });
+        return res.json();
     },
 
-    admin: {
-        getUsers: () => api.request('/admin/users'),
-        getStats: () => api.request('/admin/stats'),
-        getLogs: () => api.request('/admin/logs')
-    }
+    setToken(t) { this.token = t; localStorage.setItem('token', t); },
+    clearToken() { this.token = null; localStorage.removeItem('token'); }
 };

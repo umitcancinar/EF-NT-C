@@ -1,17 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const aiController = require('../controllers/aiController');
-const authMiddleware = require('../middlewares/auth');
-const multer = require('multer');
+const ai = require('../controllers/aiController');
+const auth = require('../middlewares/auth');
 
-// Configure multer for memory storage (we will pass base64 to Gemini directly)
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
+// Public chatbot (no auth required for basic chat)
+router.post('/chat', ai.chat);
 
-router.post('/chat', aiController.chat);
-router.post('/analyze-image', authMiddleware, upload.single('image'), aiController.analyzeImage);
-router.post('/generate-report', authMiddleware, aiController.generateReport);
-router.post('/generate-doctor-summary', authMiddleware, aiController.generateDoctorSummary);
-router.get('/reports', authMiddleware, aiController.getReports);
+// Protected AI features
+router.post('/risk-report', auth, ai.riskReport);
+router.post('/partner-search', auth, ai.partnerSearch);
+router.post('/portfolio', auth, ai.portfolio);
+router.post('/logistics', auth, ai.logistics);
+router.post('/accountant', auth, ai.accountant);
+router.get('/reports', auth, ai.getReports);
 
 module.exports = router;

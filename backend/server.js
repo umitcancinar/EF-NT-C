@@ -15,25 +15,25 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Statik frontend dosyalarını sunmak için (daha sonra oluşturacağız)
+// Static frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/user', require('./routes/userRoutes'));
-app.use('/api/health', require('./routes/healthRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/market', require('./routes/marketRoutes'));
+app.use('/api/news', require('./routes/newsRoutes'));
 
-// Genel Hata Yakalama
+// Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Sunucu hatası', details: err.message });
+  res.status(500).json({ error: 'Server error', details: err.message });
 });
 
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`🚀 EFİNTİC Server running on port ${PORT}`);
   });
 }
 
