@@ -19,7 +19,7 @@ exports.register = async (req, res) => {
       [username, email, passwordHash]
     );
 
-    const token = jwt.sign({ userId: newUser.rows[0].id, role: newUser.rows[0].role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ userId: newUser.rows[0].id, role: newUser.rows[0].role }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
 
     res.status(201).json({ user: newUser.rows[0], token });
   } catch (err) {
@@ -44,7 +44,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ error: 'Invalid email or password.' });
     }
 
-    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
 
     res.json({
       user: {
@@ -52,13 +52,6 @@ exports.login = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
-        full_name: user.full_name,
-        company_name: user.company_name,
-        sector: user.sector,
-        country: user.country,
-        city: user.city,
-        capital_range: user.capital_range,
-        experience: user.experience,
         profile_completed: user.profile_completed
       },
       token
@@ -66,5 +59,17 @@ exports.login = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'An error occurred during login.' });
+  }
+};
+
+exports.getMe = async (req, res) => {
+  try {
+    const userResult = await db.query('SELECT id, username, email, role, profile_completed FROM users WHERE id = $1', [req.user.userId]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    res.json({ user: userResult.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'An error occurred.' });
   }
 };
