@@ -989,7 +989,8 @@ const app = {
                 this.hideLoader();
             }
         });
-    },
+    }
+},
 
     async initProfileView() {
         try {
