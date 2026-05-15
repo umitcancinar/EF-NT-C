@@ -1,7 +1,8 @@
 // ═══ EFİNTİC VIEW TEMPLATES ═══
 const views = {
 landing(t) {
-return `<div class="view-section" style="margin-left:calc(-1 * var(--sidebar-width));width:calc(100% + var(--sidebar-width));padding:0 40px;">
+return `<div class="view-section" style="margin-left:calc(-1 * var(--sidebar-width));width:calc(100% + var(--sidebar-width));">
+<div class="landing-container">
 <div class="hero">
   <h1 data-i18n="hero_title">${t.hero_title}</h1>
   <p data-i18n="hero_desc">${t.hero_desc}</p>
@@ -33,6 +34,7 @@ return `<div class="view-section" style="margin-left:calc(-1 * var(--sidebar-wid
 <div class="landing-footer">
   <p data-i18n="footer_copy">${t.footer_copy}</p>
   <a href="https://umitcancinar.me" target="_blank" class="dev-link" data-i18n="footer_dev">${t.footer_dev}</a>
+</div>
 </div>
 </div>`;
 },
