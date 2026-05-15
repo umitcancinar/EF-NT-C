@@ -41,7 +41,7 @@ exports.updateProfile = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
   try {
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const { currentPassword, newPassword } = req.body;
     
     const userResult = await db.query('SELECT password_hash FROM users WHERE id = $1', [req.user.userId]);

@@ -17,8 +17,5 @@
   "scripts": {
     "start": "node api/index.js",
     "dev": "node api/index.js"
-  },
-  "engines": {
-    "node": "24.x"
   }
 }
