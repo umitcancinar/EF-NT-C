@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const initDB = require('./config/init');
+const initDB = require('../backend/config/init');
 
 // Initialize Database
 initDB();
@@ -19,11 +19,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/user', require('./routes/userRoutes'));
-app.use('/api/ai', require('./routes/aiRoutes'));
-app.use('/api/market', require('./routes/marketRoutes'));
-app.use('/api/news', require('./routes/newsRoutes'));
+app.use('/api/auth', require('../backend/routes/authRoutes'));
+app.use('/api/user', require('../backend/routes/userRoutes'));
+app.use('/api/ai', require('../backend/routes/aiRoutes'));
+app.use('/api/market', require('../backend/routes/marketRoutes'));
+app.use('/api/news', require('../backend/routes/newsRoutes'));
 
 // Global Error Handler
 app.use((err, req, res, next) => {
