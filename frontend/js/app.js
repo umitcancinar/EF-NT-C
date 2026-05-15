@@ -125,7 +125,7 @@ const app = {
             if (landingLinks) landingLinks.classList.add('hidden');
             if (headerWelcome) {
                 const welcomePrefix = i18n.translations[i18n.currentLang].welcome_user;
-                headerWelcome.innerHTML = `<span style="color: var(--text-muted); font-size: 14px; font-weight: 500;">${welcomePrefix}</span><span style="color: var(--accent); font-weight: 800;">${this.user.username}</span>`;
+                headerWelcome.innerHTML = `<span data-i18n="welcome_user" style="color: var(--text-muted); font-size: 14px; font-weight: 500;">${welcomePrefix}</span><span style="color: var(--accent); font-weight: 800;">${this.user.username}</span>`;
                 headerWelcome.classList.remove('hidden');
             }
 
