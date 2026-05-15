@@ -2,7 +2,7 @@
   "name": "erkenteshisai",
   "version": "1.0.0",
   "description": "Erken Teşhis AI Platform",
-  "main": "backend/server.js",
+  "main": "api/index.js",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.16.1",
@@ -15,8 +15,8 @@
     "pg": "^8.20.0"
   },
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "node backend/server.js"
+    "start": "node api/index.js",
+    "dev": "node api/index.js"
   },
   "engines": {
     "node": "24.x"
