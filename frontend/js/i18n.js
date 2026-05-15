@@ -236,7 +236,6 @@ const i18n = {
             advisor_greet: "Hello, I'm Early Diagnosis AI. How can I help you? Do you have any symptoms?",
             advisor_placeholder: "What is your complaint or question?"
         }
-        }
     },
     
     toggle() {
