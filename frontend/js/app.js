@@ -19,6 +19,7 @@ const loaderMsg = document.getElementById('loader-message');
 const youtubeBtn = document.getElementById('youtube-btn');
 
 let currentUser = JSON.parse(localStorage.getItem('efintic_user') || 'null');
+let newsInterval = null;
 
 // ── Theme ──
 function initTheme() {
@@ -119,6 +120,9 @@ function navigate(hash) {
   sidebar.classList.remove('show');
   overlay.classList.remove('show');
 
+  // Clear previous auto-refresh intervals
+  if (newsInterval) { clearInterval(newsInterval); newsInterval = null; }
+
   // Update active sidebar link
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   const activeLink = document.querySelector(`.nav-links a[href="#${route}"]`);
@@ -139,17 +143,29 @@ function navigate(hash) {
 
   // Render view
   switch(route) {
-    case 'landing': vc.innerHTML = views.landing(t); loadNews('news-grid'); break;
+    case 'landing': 
+      vc.innerHTML = views.landing(t); 
+      loadNews('news-grid'); 
+      newsInterval = setInterval(() => loadNews('news-grid'), 30000);
+      break;
     case 'login': vc.innerHTML = views.login(t); break;
     case 'register': vc.innerHTML = views.register(t); break;
-    case 'dashboard': vc.innerHTML = views.dashboard(t, currentUser); loadNews('dash-news-grid'); loadDashStats(); break;
+    case 'dashboard': 
+      vc.innerHTML = views.dashboard(t, currentUser); 
+      loadNews('dash-news-grid'); 
+      newsInterval = setInterval(() => loadNews('dash-news-grid'), 30000);
+      loadDashStats(); 
+      break;
     case 'risk-report': vc.innerHTML = views.riskReport(t); break;
     case 'partner-search': vc.innerHTML = views.partnerSearch(t); break;
     case 'portfolio': vc.innerHTML = views.portfolio(t); break;
     case 'logistics': vc.innerHTML = views.logistics(t); break;
     case 'accountant': vc.innerHTML = views.accountant(t); initAccountantTabs(); loadExpenses(); loadSalaries(); break;
     case 'profile': vc.innerHTML = views.profile(t, currentUser); break;
-    default: vc.innerHTML = views.landing(t); loadNews('news-grid');
+    default: 
+      vc.innerHTML = views.landing(t); 
+      loadNews('news-grid');
+      newsInterval = setInterval(() => loadNews('news-grid'), 30000);
   }
   window.scrollTo(0,0);
   bindPageEvents(route);

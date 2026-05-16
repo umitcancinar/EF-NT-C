@@ -50,5 +50,5 @@
     }
 
     fetchTicker();
-    setInterval(fetchTicker, 60000); // Refresh every 60s
+    setInterval(fetchTicker, 15000); // Refresh every 15s
 })();
