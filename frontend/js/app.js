@@ -171,6 +171,12 @@ function navigate(hash) {
   const publicRoutes = ['landing','login','register','how-it-works-scroll'];
   if (!publicRoutes.includes(route) && !isLoggedIn()) { location.hash = '#login'; return; }
 
+  // Logged in users shouldn't see landing/login/register
+  if (isLoggedIn() && ['landing', 'login', 'register'].includes(route)) {
+    location.hash = '#dashboard';
+    return;
+  }
+
   // Scroll to how-it-works
   if (route === 'how-it-works-scroll') {
     if (!isLoggedIn()) {
