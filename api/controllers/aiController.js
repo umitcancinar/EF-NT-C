@@ -5,10 +5,11 @@ const MODEL_NAME = 'gemini-1.5-flash'; // En yaygın kullanılan ücretsiz model
 
 // Ortak AI İstek Fonksiyonu
 const getAIResponse = async (prompt) => {
-  if (!process.env.GEMINI_API_KEY) {
+  const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyDgo3oK0_QgTz_De8qpgPiMfHQMqy1-Cnc';
+  if (!apiKey) {
     throw new Error('GEMINI_API_KEY is missing in environment variables');
   }
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: MODEL_NAME });
   
   try {
@@ -24,7 +25,7 @@ const getAIResponse = async (prompt) => {
 // ─── Chatbot ───
 const chat = async (req, res) => {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyDgo3oK0_QgTz_De8qpgPiMfHQMqy1-Cnc';
     if (!apiKey) {
       return res.status(400).json({ error: 'GEMINI_API_KEY missing' });
     }
