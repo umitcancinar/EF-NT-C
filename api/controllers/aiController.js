@@ -23,7 +23,7 @@ const getAIResponse = async (prompt) => {
 };
 
 // ─── Chatbot ───
-const chat = async (req, res) => {
+exports.chat = async (req, res) => {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -72,7 +72,7 @@ const chat = async (req, res) => {
 };
 
 // ─── Risk Report ───
-const riskReport = async (req, res) => {
+exports.riskReport = async (req, res) => {
   try {
     const { sector, newsContext, lang } = req.body;
     const prompt = lang === 'TR' 
@@ -86,7 +86,7 @@ const riskReport = async (req, res) => {
 };
 
 // ─── Partner Search ───
-const partnerSearch = async (req, res) => {
+exports.partnerSearch = async (req, res) => {
   try {
     const { sector, city, budget, lang } = req.body;
     const prompt = lang === 'TR'
@@ -100,7 +100,7 @@ const partnerSearch = async (req, res) => {
 };
 
 // ─── Portfolio Advisor ───
-const portfolio = async (req, res) => {
+exports.portfolio = async (req, res) => {
   try {
     const { capital, riskTolerance, lang } = req.body;
     const prompt = lang === 'TR'
@@ -114,7 +114,7 @@ const portfolio = async (req, res) => {
 };
 
 // ─── Logistics Assistant ───
-const logistics = async (req, res) => {
+exports.logistics = async (req, res) => {
   try {
     const { origin, destination, cargoType, lang } = req.body;
     const prompt = lang === 'TR'
@@ -128,7 +128,7 @@ const logistics = async (req, res) => {
 };
 
 // ─── Accountant Agent ───
-const accountant = async (req, res) => {
+exports.accountant = async (req, res) => {
   try {
     const { query, lang } = req.body;
     const prompt = lang === 'TR'
@@ -142,7 +142,7 @@ const accountant = async (req, res) => {
 };
 
 // ─── Get Reports ───
-const getReports = async (req, res) => {
+exports.getReports = async (req, res) => {
   try {
     const result = await db.query(
       'SELECT * FROM ai_reports WHERE user_id = $1 ORDER BY created_at DESC LIMIT 20',
@@ -154,12 +154,4 @@ const getReports = async (req, res) => {
   }
 };
 
-module.exports = {
-  chat,
-  riskReport,
-  partnerSearch,
-  portfolio,
-  logistics,
-  accountant,
-  getReports
-};
+
