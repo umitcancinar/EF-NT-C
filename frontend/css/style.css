@@ -119,8 +119,8 @@ textarea.form-control{height:auto;min-height:100px;resize:vertical}
 .toggle-auth a{color:var(--primary);text-decoration:none;font-weight:600}
 
 /* ═══ MODAL ═══ */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px}
-.modal-box{width:100%;max-width:560px;padding:40px;animation:modalIn .4s cubic-bezier(.2,0,.2,1)}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-box{background:var(--bg-secondary) !important;width:100%;max-width:560px;padding:40px;animation:modalIn .4s cubic-bezier(.2,0,.2,1);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
 .modal-header{text-align:center;margin-bottom:28px}
 .modal-header h2{font-size:24px;margin-top:12px;font-weight:700}
 .modal-header p{color:var(--text-muted);margin-top:8px;font-size:14px}
