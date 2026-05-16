@@ -1,9 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const dotenv = require('dotenv');
-
-dotenv.config();
+require('dotenv').config();
 
 const app = express();
 
@@ -17,14 +15,16 @@ app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/market', require('./routes/marketRoutes'));
 app.use('/api/news', require('./routes/newsRoutes'));
 
-// Database Initialization (optional but helpful)
-const db = require('./config/db');
-db.query('SELECT NOW()').then(() => console.log('✅ DB Connected')).catch(err => console.error('❌ DB Error:', err));
+// Veritabanı testini (DB query NOW) Vercel'de global scope'tan çıkardım 
+// çünkü bu, sunucu başlarken fonksiyonun zaman aşımına veya crash olmasına yol açıyordu.
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Serverless API is running' });
+});
 
 // Serve Static Files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-app.get('*', (req, res) => {
+app.use((req, res) => {
   if (!req.path.startsWith('/api')) {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
   }
