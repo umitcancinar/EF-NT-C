@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const db = require('../config/db');
 
-const MODEL_NAME = 'gemini-pro'; // Stabil model
+const MODEL_NAME = 'gemini-1.5-flash-latest'; // En stabil flash modeli
 
 // Ortak AI İstek Fonksiyonu
 const getAIResponse = async (prompt) => {
