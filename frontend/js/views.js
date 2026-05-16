@@ -4,7 +4,8 @@ landing(t) {
 return `<div class="view-section">
 <div class="landing-container">
 <div class="hero">
-  <h1 data-i18n="hero_title">${t.hero_title}</h1>
+  <h1 data-i18n="hero_title" style="text-transform: uppercase;">${t.hero_title}</h1>
+  <div class="hero-brand-badge">EFİNTİC</div>
   <p data-i18n="hero_desc">${t.hero_desc}</p>
   <a href="#register" class="btn btn-primary" data-i18n="btn_start">${t.btn_start}</a>
 </div>
