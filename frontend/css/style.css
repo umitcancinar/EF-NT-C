@@ -193,6 +193,7 @@ textarea.form-control{height:auto;min-height:100px;resize:vertical}
 .news-grid.active{cursor:grabbing}
 .news-track{display:flex;gap:20px;width:max-content}
 .news-card{width:360px;flex-shrink:0;padding:24px;cursor:pointer;transition:var(--transition);white-space:normal;user-select:none;-webkit-user-select:none}
+@media(max-width:768px){.news-card{width:280px;padding:16px}}
 .news-card:hover{transform:translateY(-4px);border-color:var(--primary)}
 .news-card h4{font-size:15px;font-weight:600;margin-bottom:8px;line-height:1.4}
 .news-card p{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:12px}
@@ -285,37 +286,49 @@ h1,h2,h3{letter-spacing:-.02em}
 
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:1024px){
-    :root{--sidebar-width:240px}
-    #main-content{padding:calc(var(--ticker-height) + 76px) 20px 20px}
-    .features-grid{grid-template-columns:repeat(2,1fr)}
+    :root{--sidebar-width:72px} /* Force collapse on small laptops */
+    body:not(.sidebar-collapsed) #sidebar .logo-text,
+    body:not(.sidebar-collapsed) #sidebar .nav-label,
+    body:not(.sidebar-collapsed) #sidebar #nav-username,
+    body:not(.sidebar-collapsed) #sidebar .logo-subtitle{display:none}
+    body:not(.sidebar-collapsed) #sidebar{width:72px}
+    body:not(.sidebar-collapsed) #main-content{margin-left:72px;width:calc(100% - 72px)}
+    body:not(.sidebar-collapsed) header{padding-left:calc(72px + 24px)}
+    .features-grid{grid-template-columns:repeat(2,1fr);gap:20px}
 }
 @media(max-width:768px){
     :root{--sidebar-width:0px}
-    header{height:52px;padding:0 16px}
+    header{height:60px;padding:0 12px}
+    .header-brand{transform: scale(0.9)}
     .nav-left{display:none}
-    .nav-right{gap:10px}
+    .nav-right{gap:8px}
     .youtube-btn span{display:none}
-    .youtube-btn{padding:6px 10px}
-    #sidebar{width:280px;transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:20px 0 50px rgba(0,0,0,.6);background:var(--bg-secondary);backdrop-filter:blur(20px)}
+    .youtube-btn{padding:8px;border-radius:50%;width:36px;height:36px;justify-content:center}
+    .youtube-btn i{font-size:18px;margin:0}
+    #sidebar{width:280px;transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:20px 0 50px rgba(0,0,0,0.8);background:var(--bg-secondary);backdrop-filter:blur(25px);z-index:2000}
     #sidebar.show{transform:translateX(0)}
-    #main-content{margin-left:0;width:100%;padding:calc(var(--ticker-height) + 68px) 16px 24px}
-    .dashboard-grid{grid-template-columns:1fr;gap:14px}
+    #main-content{margin-left:0;width:100%;padding:calc(var(--ticker-height) + 80px) 12px 24px}
+    .dashboard-grid{grid-template-columns:1fr;gap:12px}
     .col-3,.col-4,.col-6,.col-8,.col-12{grid-column:span 1!important}
-    .hero h1{font-size:28px;padding:0 10px;margin-bottom:16px}
-    .hero-brand-badge{font-size:14px;padding:6px 20px;margin-bottom:20px}
-    .hero p{font-size:14px;padding:0 12px}
-    .features-grid{grid-template-columns:1fr;padding:0 8px}
-    .steps{flex-direction:column;gap:24px}
+    .hero{padding:40px 0 0}
+    .hero h1{font-size:32px;padding:0 10px;margin-bottom:12px;line-height:1.2}
+    .hero-brand-badge{font-size:14px;padding:6px 20px;margin-bottom:16px;letter-spacing:2px}
+    .hero p{font-size:15px;padding:0 10px;line-height:1.5}
+    .features-grid{grid-template-columns:1fr;gap:16px;margin-top:32px}
+    .feature-card{padding:32px 20px}
+    .steps{flex-direction:column;gap:20px}
     .form-control,.chat-input-area input,select,textarea{font-size:16px!important}
-    .auth-box{padding:32px 20px;max-width:92%}
-    .form-row{grid-template-columns:1fr}
-    .modal-box{padding:28px 20px}
-    .landing-footer{flex-direction:column;gap:12px;text-align:center}
-    .tab-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .auth-box{padding:24px 16px;max-width:95%;border-radius:20px}
+    .form-row{grid-template-columns:1fr;gap:12px}
+    .modal-box{padding:24px 16px;width:95%;max-height:90vh;overflow-y:auto}
+    .landing-footer{flex-direction:column;gap:16px;text-align:center;padding:30px 20px}
+    .tab-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px}
 }
 @media(max-width:480px){
-    .hero h1{font-size:24px}
-    .hero-brand-badge{font-size:12px;padding:6px 16px;letter-spacing:2px}
+    .hero h1{font-size:26px}
+    .hero-brand-badge{font-size:12px;padding:5px 12px;letter-spacing:1px}
     .nav-right{gap:6px}
-    .btn-nav-register{padding:5px 12px;font-size:11px}
+    .btn-nav-register{padding:6px 14px;font-size:12px}
+    .header-brand div strong{font-size:16px}
+    .header-brand div span{font-size:8px}
 }

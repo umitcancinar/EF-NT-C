@@ -26,7 +26,7 @@ const i18n = {
             nav_dashboard:"Dashboard",nav_risk:"Sektörel Risk Raporu",nav_partner:"İş Ortağı Bul",
             nav_portfolio:"Portföy & Yatırım",nav_logistics:"Lojistik Asistanı",nav_accountant:"Muhasebeci",nav_profile:"Profil",
             modal_welcome_title:"Hoş Geldiniz! 🚀",modal_welcome_desc:"Platformu kişiselleştirmek için bilgilerinizi tamamlayın.",
-            lbl_fullname:"Ad Soyad",lbl_company:"Şirket Adı",lbl_sector:"Sektör",
+            lbl_fullname:"Ad Soyad",lbl_company:"Şirket Adı",lbl_sector:"Sektörünüz",
             lbl_capital:"Sermaye Aralığı",lbl_country:"Ülke",lbl_city:"Şehir",
             lbl_experience:"Sektörünüz",btn_complete_profile:"Profili Tamamla",
             // Dashboard
@@ -99,7 +99,7 @@ const i18n = {
             nav_dashboard:"Dashboard",nav_risk:"Sectoral Risk Report",nav_partner:"Find Partner",
             nav_portfolio:"Portfolio & Investment",nav_logistics:"Logistics Assistant",nav_accountant:"Accountant",nav_profile:"Profile",
             modal_welcome_title:"Welcome! 🚀",modal_welcome_desc:"Complete your information to personalize the platform.",
-            lbl_fullname:"Full Name",lbl_company:"Company Name",lbl_sector:"Sector",
+            lbl_fullname:"Full Name",lbl_company:"Company Name",lbl_sector:"Your Sector",
             lbl_capital:"Capital Range",lbl_country:"Country",lbl_city:"City",
             lbl_experience:"Your Sector",btn_complete_profile:"Complete Profile",
             dash_title:"Dashboard",dash_desc:"Market summary and quick access.",

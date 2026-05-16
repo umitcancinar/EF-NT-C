@@ -176,7 +176,7 @@ return `<div class="view-section profile-section"><div class="page-header"><h1 d
   <div class="form-group"><label data-i18n="lbl_capital">${t.lbl_capital}</label><input type="text" id="prof-capital" class="form-control" value="${user?.capital_range||''}"></div></div>
   <div class="form-row"><div class="form-group"><label data-i18n="lbl_country">${t.lbl_country}</label><input type="text" id="prof-country" class="form-control" value="${user?.country||''}"></div>
   <div class="form-group"><label data-i18n="lbl_city">${t.lbl_city}</label><input type="text" id="prof-city" class="form-control" value="${user?.city||''}"></div></div>
-  <div class="form-group"><label data-i18n="lbl_experience">${t.lbl_experience}</label><input type="text" id="prof-exp" class="form-control" value="${user?.experience||''}"></div>
+
   <button type="submit" class="btn btn-primary" data-i18n="btn_update">${t.btn_update}</button>
 </form>
 <hr style="border-color:var(--border);margin:32px 0">

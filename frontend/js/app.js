@@ -393,7 +393,7 @@ function bindPageEvents(route) {
   const profForm = document.getElementById('profile-form');
   if (profForm) profForm.addEventListener('submit', async(e) => {
     e.preventDefault();
-    const res = await api.put('/user/profile', { full_name: document.getElementById('prof-fullname').value, company_name: document.getElementById('prof-company').value, sector: document.getElementById('prof-sector').value, capital_range: document.getElementById('prof-capital').value, country: document.getElementById('prof-country').value, city: document.getElementById('prof-city').value, experience: document.getElementById('prof-exp').value });
+    const res = await api.put('/user/profile', { full_name: document.getElementById('prof-fullname').value, company_name: document.getElementById('prof-company').value, sector: document.getElementById('prof-sector').value, capital_range: document.getElementById('prof-capital').value, country: document.getElementById('prof-country').value, city: document.getElementById('prof-city').value });
     if (!res.error) { currentUser = {...currentUser, ...res}; localStorage.setItem('efintic_user', JSON.stringify(currentUser)); updateUI(); toast('Profil güncellendi'); }
   });
 
@@ -420,24 +420,31 @@ function formatAIResult(text) {
 const profCompleteForm = document.getElementById('profile-complete-form');
 if (profCompleteForm) profCompleteForm.addEventListener('submit', async(e) => {
   e.preventDefault();
-  const data = {
-    full_name: document.getElementById('pf-fullname').value,
-    company_name: document.getElementById('pf-company').value,
-    sector: document.getElementById('pf-sector').value,
-    capital_range: document.getElementById('pf-capital').value,
-    country: document.getElementById('pf-country').value,
-    city: document.getElementById('pf-city').value,
-    experience: document.getElementById('pf-experience').value,
-    profile_completed: true
-  };
-  const res = await api.put('/user/profile', data);
-  if (!res.error) {
+  try {
+    const data = {
+      full_name: document.getElementById('pf-fullname').value,
+      company_name: document.getElementById('pf-company').value,
+      sector: document.getElementById('pf-sector').value,
+      capital_range: document.getElementById('pf-capital').value,
+      country: document.getElementById('pf-country').value,
+      city: document.getElementById('pf-city').value,
+      profile_completed: true
+    };
+    showLoader('Profil güncelleniyor...');
+    const res = await api.put('/user/profile', data);
+    hideLoader();
+    if (res.error) return toast(res.error, 'error');
+    
     currentUser = {...currentUser, ...data, ...res, profile_completed: true};
     localStorage.setItem('efintic_user', JSON.stringify(currentUser));
     profileModal.classList.add('hidden');
     updateUI();
     location.hash = '#dashboard';
     toast('Profil tamamlandı! 🎉');
+  } catch(err) {
+    hideLoader();
+    console.error('Profile complete error:', err);
+    toast('Bir hata oluştu', 'error');
   }
 });
 
