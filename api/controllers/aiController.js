@@ -66,7 +66,7 @@ const chat = async (req, res) => {
     return res.json({ response: aiMessage });
   } catch (err) {
     console.error("Chat Error:", err.message);
-    return res.status(500).json({ error: 'AI bağlantı hatası oluştu. Lütfen tekrar deneyin.' });
+    return res.status(500).json({ error: `AI Error: ${err.message}` });
   }
 };
 
