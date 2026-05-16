@@ -24,18 +24,20 @@ router.get('/ticker', async (req, res) => {
       if (ch >= 0) { t.direction = 'up'; t.color = '#34c759'; t.change = '+' + t.change; }
       else { t.direction = 'down'; t.color = '#ff3b30'; }
     });
+    
     return res.json(ticker);
   } catch (err) {
     console.error('Market API Error:', err.message);
-    res.json([
+    // Güvenli Yedek Veri
+    return res.json([
       { symbol: 'USD/TRY', price: '45.51', change: '+0.35', direction: 'up', color: '#34c759' },
       { symbol: 'EUR/TRY', price: '53.17', change: '-0.12', direction: 'down', color: '#ff3b30' },
       { symbol: 'GBP/TRY', price: '61.25', change: '+0.28', direction: 'up', color: '#34c759' },
       { symbol: 'JPY/TRY', price: '0.2878', change: '+0.01', direction: 'up', color: '#34c759' },
       { symbol: 'XAU/USD', price: '3,245', change: '+12.50', direction: 'up', color: '#34c759' },
       { symbol: 'BRENT', price: '82.45', change: '-1.20', direction: 'down', color: '#ff3b30' },
-      { symbol: 'BTC/USD', price: '104,250', change: '+2.4%', direction: 'up', color: '#34c759' },
-      { symbol: 'ETH/USD', price: '3,890', change: '-1.1%', direction: 'down', color: '#ff3b30' },
+      { symbol: 'BTC/USD', price: '104,250', change: '+2.4', direction: 'up', color: '#34c759' },
+      { symbol: 'ETH/USD', price: '3,890', change: '-1.1', direction: 'down', color: '#ff3b30' },
     ]);
   }
 });

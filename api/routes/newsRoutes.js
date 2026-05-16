@@ -18,10 +18,13 @@ router.get('/latest', async (req, res) => {
       }));
       return res.json(articles);
     }
+    
+    // Fallback if no articles
     throw new Error('No articles found');
   } catch (err) {
     console.error('News API Error:', err.message);
-    res.json([
+    // Güvenli Yedek Veri (Uygulamanın asla çökmemesi için)
+    return res.json([
       {
         title: "Merkez Bankası Faiz Kararını Açıkladı",
         description: "TCMB, politika faizini sabit tutarak piyasalara net mesaj verdi. Analistler kararı değerlendirdi.",
