@@ -92,23 +92,61 @@ function updateUI() {
   }
 }
 
-// ── Mobile sidebar ──
+// ── Mobile sidebar & Collapse ──
+const sidebarCollapseBtn = document.getElementById('sidebar-collapse-btn');
+if (sidebarCollapseBtn) {
+  sidebarCollapseBtn.addEventListener('click', () => {
+    document.body.classList.toggle('sidebar-collapsed');
+    localStorage.setItem('sidebar_collapsed', document.body.classList.contains('sidebar-collapsed'));
+  });
+  if (localStorage.getItem('sidebar_collapsed') === 'true') document.body.classList.add('sidebar-collapsed');
+}
+
 mobileToggle.addEventListener('click', () => { sidebar.classList.toggle('show'); overlay.classList.toggle('show'); });
 overlay.addEventListener('click', () => { sidebar.classList.remove('show'); overlay.classList.remove('show'); });
 
 // ── Fetch News ──
+const newsScrollers = {};
 async function loadNews(targetId) {
   try {
     const articles = await api.get('/news/latest');
     const grid = document.getElementById(targetId);
     if (!grid || !Array.isArray(articles)) return;
-    const repeated = [...articles, ...articles];
-    grid.innerHTML = '<div class="news-track">' + repeated.map(a => `
+    const repeated = [...articles, ...articles, ...articles]; // triple to ensure enough overflow
+    grid.innerHTML = '<div class="news-track" id="track-'+targetId+'">' + repeated.map(a => `
       <div class="news-card glass-panel" onclick="if('${a.url}' !== '#') window.open('${a.url}','_blank')" style="cursor:pointer">
         <h4 style="margin-bottom:8px">${a.title}</h4>
         <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">${a.description || ''}</p>
         <div class="news-meta"><span class="source" style="font-weight:700;color:var(--primary)">${a.source}</span><span>${new Date(a.publishedAt).toLocaleDateString()}</span></div>
       </div>`).join('') + '</div>';
+
+    // JS Auto-Scroll & Drag Logic
+    if (newsScrollers[targetId]) cancelAnimationFrame(newsScrollers[targetId].req);
+    let isDown = false, startX, scrollLeft, isHover = false;
+    
+    grid.addEventListener('mousedown', (e) => { isDown = true; grid.classList.add('active'); startX = e.pageX - grid.offsetLeft; scrollLeft = grid.scrollLeft; });
+    grid.addEventListener('mouseleave', () => { isDown = false; grid.classList.remove('active'); isHover = false; });
+    grid.addEventListener('mouseup', () => { isDown = false; grid.classList.remove('active'); });
+    grid.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - grid.offsetLeft;
+      grid.scrollLeft = scrollLeft - (x - startX) * 2;
+    });
+    grid.addEventListener('mouseenter', () => { isHover = true; });
+
+    const track = document.getElementById('track-'+targetId);
+    function autoScroll() {
+      if (!isDown && !isHover) {
+        grid.scrollLeft += 1;
+        if (grid.scrollLeft >= (track.scrollWidth / 3)) {
+          grid.scrollLeft = 0; // reset seamlessly
+        }
+      }
+      newsScrollers[targetId].req = requestAnimationFrame(autoScroll);
+    }
+    newsScrollers[targetId] = { req: requestAnimationFrame(autoScroll) };
+
   } catch(e) {}
 }
 
@@ -390,10 +428,11 @@ if (profCompleteForm) profCompleteForm.addEventListener('submit', async(e) => {
     country: document.getElementById('pf-country').value,
     city: document.getElementById('pf-city').value,
     experience: document.getElementById('pf-experience').value,
+    profile_completed: true
   };
   const res = await api.put('/user/profile', data);
   if (!res.error) {
-    currentUser = {...currentUser, ...res};
+    currentUser = {...currentUser, ...data, ...res, profile_completed: true};
     localStorage.setItem('efintic_user', JSON.stringify(currentUser));
     profileModal.classList.add('hidden');
     updateUI();

@@ -3,7 +3,7 @@ const i18n = {
     translations: {
         TR: {
             nav_home:"Ana Sayfa",nav_how:"Nasıl Çalışır",nav_login:"Giriş Yap",nav_register:"Kayıt Ol",
-            hero_title:"Ticaretin Geleceği,<br>Finans Zekası ile Buluşuyor.",
+            hero_title:"E-Ticaret Şirketinizin<br>Tüm Finansal Çözümleri<br>Tek Adreste.",
             hero_desc:"Yapay zeka destekli sektörel analiz, piyasa takibi, akıllı iş ortağı bulma ve portföy yönetimi platformu.",
             btn_start:"Hemen Başlayın",btn_login:"Giriş Yap",btn_register:"Kayıt Ol",
             feat_1_title:"Sektörel Risk Raporu",feat_1_desc:"AI, güncel haberleri ve piyasa verilerini analiz ederek sektörünüze özel risk ve fırsat raporu oluşturur.",
@@ -28,7 +28,7 @@ const i18n = {
             modal_welcome_title:"Hoş Geldiniz! 🚀",modal_welcome_desc:"Platformu kişiselleştirmek için bilgilerinizi tamamlayın.",
             lbl_fullname:"Ad Soyad",lbl_company:"Şirket Adı",lbl_sector:"Sektör",
             lbl_capital:"Sermaye Aralığı",lbl_country:"Ülke",lbl_city:"Şehir",
-            lbl_experience:"İş Deneyimi",btn_complete_profile:"Profili Tamamla",
+            lbl_experience:"Sektörünüz",btn_complete_profile:"Profili Tamamla",
             // Dashboard
             dash_title:"Dashboard",dash_desc:"Piyasa özeti ve hızlı erişim.",
             stat_reports:"Toplam Rapor",stat_expenses:"Aylık Gider",stat_sector:"Sektör",stat_risk:"Risk Seviyesi",
@@ -76,7 +76,7 @@ const i18n = {
         },
         EN: {
             nav_home:"Home",nav_how:"How it Works",nav_login:"Login",nav_register:"Register",
-            hero_title:"Future of Commerce,<br>Meets Financial Intelligence.",
+            hero_title:"All Financial Solutions<br>for Your E-Commerce<br>in One Place.",
             hero_desc:"AI-powered sectoral analysis, market tracking, smart partner matching, and portfolio management platform.",
             btn_start:"Get Started",btn_login:"Login",btn_register:"Register",
             feat_1_title:"Sectoral Risk Report",feat_1_desc:"AI analyzes current news and market data to create sector-specific risk and opportunity reports.",
@@ -101,7 +101,7 @@ const i18n = {
             modal_welcome_title:"Welcome! 🚀",modal_welcome_desc:"Complete your information to personalize the platform.",
             lbl_fullname:"Full Name",lbl_company:"Company Name",lbl_sector:"Sector",
             lbl_capital:"Capital Range",lbl_country:"Country",lbl_city:"City",
-            lbl_experience:"Work Experience",btn_complete_profile:"Complete Profile",
+            lbl_experience:"Your Sector",btn_complete_profile:"Complete Profile",
             dash_title:"Dashboard",dash_desc:"Market summary and quick access.",
             stat_reports:"Total Reports",stat_expenses:"Monthly Expenses",stat_sector:"Sector",stat_risk:"Risk Level",
             risk_title:"Sectoral Risk & Advisory Report",risk_desc:"AI analyzes news and markets to create sector-specific risk reports.",

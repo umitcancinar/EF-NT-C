@@ -30,6 +30,10 @@
                 <i class='bx bx-menu'></i>
             </div>
             <div class="nav-left">
+                <a href="#landing" class="header-brand" id="header-brand">
+                    <i class='bx bx-trending-up'></i>
+                    <div><strong>EFİNTİC</strong><span>E-Ticaret / Finans</span></div>
+                </a>
                 <span id="header-user-welcome" class="hidden" style="font-weight: 700; font-size: 16px; letter-spacing: -0.5px; color: var(--text-main);"></span>
             </div>
             <div id="landing-links">
@@ -61,7 +65,13 @@
         <nav id="sidebar" class="hidden glass-panel">
             <div class="logo">
                 <i class='bx bx-trending-up'></i>
-                <h2 style="font-size: 20px;" data-i18n="logo_text">EFİNTİC</h2>
+                <div class="logo-text">
+                    <h2 style="font-size: 20px;" data-i18n="logo_text">EFİNTİC</h2>
+                    <span class="logo-subtitle">E-Ticaret / Finans</span>
+                </div>
+                <button id="sidebar-collapse-btn" class="sidebar-collapse-btn" title="Menüyü Daralt">
+                    <i class='bx bx-chevrons-left'></i>
+                </button>
             </div>
             <ul class="nav-links">
                 <li><a href="#dashboard" class="active" data-link data-i18n="nav_dashboard"><i class='bx bx-home-alt'></i> Dashboard</a></li>
@@ -155,13 +165,20 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label data-i18n="lbl_experience">İlgi Alanı / Alt Sektör</label>
+                    <label data-i18n="lbl_experience">Sektörünüz</label>
                     <select id="pf-experience" class="form-control">
                         <option value="">Seçin...</option>
                         <option value="e-ticaret">E-Ticaret</option>
                         <option value="lojistik">Lojistik</option>
-                        <option value="finans">Finans & Yatırım</option>
-                        <option value="teknoloji">Yazılım & Teknoloji</option>
+                        <option value="gida">Gıda</option>
+                        <option value="tekstil">Tekstil</option>
+                        <option value="teknoloji">Teknoloji</option>
+                        <option value="insaat">İnşaat</option>
+                        <option value="enerji">Enerji</option>
+                        <option value="turizm">Turizm</option>
+                        <option value="saglik">Sağlık</option>
+                        <option value="finans">Finans</option>
+                        <option value="tarim">Tarım</option>
                         <option value="diger">Diğer</option>
                     </select>
                 </div>
