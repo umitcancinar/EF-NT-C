@@ -4,7 +4,8 @@ const axios = require('axios');
 
 router.get('/latest', async (req, res) => {
   try {
-    const apiKey = process.env.GNEWS_API_KEY || '775a2d658238686e0887103759902633';
+    const apiKey = process.env.GNEWS_API_KEY;
+    if (!apiKey) throw new Error('GNEWS_API_KEY eksik');
     const response = await axios.get(`https://gnews.io/api/v4/top-headlines?category=business&lang=tr&country=tr&max=8&apikey=${apiKey}`, { timeout: 5000 });
     
     if (response.data && response.data.articles) {
