@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const db = require('../config/db');
 
-const MODEL_NAME = 'gemini-flash-latest'; // Google'ın güncel çalışan model ismi
+const MODEL_NAME = 'gemini-3-flash-preview'; // Mayıs 2026 Güncel Sürüm
 
 // Ortak AI İstek Fonksiyonu
 const getAIResponse = async (prompt) => {
