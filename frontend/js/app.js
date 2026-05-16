@@ -206,6 +206,10 @@ function navigate(hash) {
     case 'portfolio': vc.innerHTML = views.portfolio(t); break;
     case 'logistics': vc.innerHTML = views.logistics(t); break;
     case 'accountant': vc.innerHTML = views.accountant(t); initAccountantTabs(); loadExpenses(); loadSalaries(); break;
+    case 'reports': 
+      vc.innerHTML = views.reports(t, []); 
+      loadReports(); 
+      break;
     case 'profile': vc.innerHTML = views.profile(t, currentUser); break;
     default: 
       vc.innerHTML = views.landing(t); 
@@ -215,6 +219,18 @@ function navigate(hash) {
   window.scrollTo(0,0);
   bindPageEvents(route);
 }
+
+// ── Reports ──
+async function loadReports() {
+  try {
+    const reports = await api.get('/ai/reports');
+    const t = i18n.translations[i18n.currentLang];
+    vc.innerHTML = views.reports(t, reports || []);
+  } catch(err) {
+    console.error('Reports load error:', err);
+  }
+}
+
 
 // ── Dashboard Stats ──
 async function loadDashStats() {

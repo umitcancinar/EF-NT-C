@@ -167,23 +167,51 @@ return `<div class="view-section feature-page"><div class="page-header"><div cla
 </div></div>`;
 },
 
-profile(t, user) {
-return `<div class="view-section profile-section"><div class="page-header"><h1 data-i18n="profile_title">${t.profile_title}</h1><p data-i18n="profile_desc">${t.profile_desc}</p></div>
-<form id="profile-form" class="ai-form">
-  <div class="form-row"><div class="form-group"><label data-i18n="lbl_fullname">${t.lbl_fullname}</label><input type="text" id="prof-fullname" class="form-control" value="${user?.full_name||''}"></div>
-  <div class="form-group"><label data-i18n="lbl_company">${t.lbl_company}</label><input type="text" id="prof-company" class="form-control" value="${user?.company_name||''}"></div></div>
-  <div class="form-row"><div class="form-group"><label data-i18n="lbl_sector">${t.lbl_sector}</label><input type="text" id="prof-sector" class="form-control" value="${user?.sector||''}"></div>
-  <div class="form-group"><label data-i18n="lbl_capital">${t.lbl_capital}</label><input type="text" id="prof-capital" class="form-control" value="${user?.capital_range||''}"></div></div>
-  <div class="form-row"><div class="form-group"><label data-i18n="lbl_country">${t.lbl_country}</label><input type="text" id="prof-country" class="form-control" value="${user?.country||''}"></div>
-  <div class="form-group"><label data-i18n="lbl_city">${t.lbl_city}</label><input type="text" id="prof-city" class="form-control" value="${user?.city||''}"></div></div>
+  reports(t, reports) {
+    const list = reports.length ? reports.map(r => `
+      <div class="card glass-panel" style="margin-bottom:16px; cursor:pointer" onclick="this.querySelector('.report-content').classList.toggle('hidden')">
+        <div style="display:flex; justify-content:space-between; align-items:center">
+          <div>
+            <h4 style="margin:0">${r.title}</h4>
+            <span style="font-size:11px; color:var(--text-muted)">${new Date(r.created_at).toLocaleString()}</span>
+          </div>
+          <span class="badge" style="background:var(--primary); color:#fff; padding:4px 8px; border-radius:6px; font-size:10px">${r.type.toUpperCase()}</span>
+        </div>
+        <div class="report-content hidden" style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px; font-size:14px; line-height:1.6">
+          ${r.content.replace(/\n/g, '<br>')}
+        </div>
+      </div>`).join('') : `<p style="text-align:center; color:var(--text-muted); padding:40px">Henüz raporunuz bulunmamaktadır.</p>`;
+    
+    return `<div class="view-section feature-page">
+      <div class="page-header"><div class="page-icon" style="background:var(--primary)"><i class='bx bx-file-find'></i></div>
+      <div><h1>Geçmiş Raporlarım</h1><p>Daha önce oluşturduğunuz tüm analizler burada saklanır.</p></div></div>
+      <div class="reports-list" style="width:100%">${list}</div>
+    </div>`;
+  },
 
-  <button type="submit" class="btn btn-primary" data-i18n="btn_update">${t.btn_update}</button>
-</form>
-<hr style="border-color:var(--border);margin:32px 0">
-<form id="password-form" class="ai-form">
-  <div class="form-row"><div class="form-group"><label data-i18n="lbl_current_pass">${t.lbl_current_pass}</label><input type="password" id="prof-curpass" class="form-control"></div>
-  <div class="form-group"><label data-i18n="lbl_new_pass">${t.lbl_new_pass}</label><input type="password" id="prof-newpass" class="form-control"></div></div>
-  <button type="submit" class="btn btn-glass" data-i18n="btn_change_pass">${t.btn_change_pass}</button>
-</form></div>`;
-}
+  profile(t, user) {
+    return `<div class="view-section profile-section">
+      <div class="page-header"><h1>${t.nav_profile || 'Profil'}</h1><p>Profil bilgilerinizi buradan yönetebilirsiniz.</p></div>
+      <div class="card glass-panel" style="width:100%; max-width:600px">
+        <form id="profile-form" class="ai-form">
+          <div class="form-group"><label>Ad Soyad</label><input type="text" id="prof-fullname" class="form-control" value="${user?.full_name||''}"></div>
+          <div class="form-group"><label>Şirket Adı</label><input type="text" id="prof-company" class="form-control" value="${user?.company_name||''}"></div>
+          <div class="form-group"><label>Sektör</label><input type="text" id="prof-sector" class="form-control" value="${user?.sector||''}"></div>
+          <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+            <div class="form-group"><label>Ülke</label><input type="text" id="prof-country" class="form-control" value="${user?.country||''}"></div>
+            <div class="form-group"><label>Şehir</label><input type="text" id="prof-city" class="form-control" value="${user?.city||''}"></div>
+          </div>
+          <button type="submit" class="btn btn-primary">Bilgileri Güncelle</button>
+        </form>
+        <hr style="margin:32px 0; border:0; border-top:1px solid var(--border)">
+        <h3 style="margin-bottom:16px">Şifre Değiştir</h3>
+        <form id="password-form" class="ai-form">
+          <div class="form-group"><label>Mevcut Şifre</label><input type="password" id="prof-curpass" class="form-control" required></div>
+          <div class="form-group"><label>Yeni Şifre</label><input type="password" id="prof-newpass" class="form-control" required minlength="6"></div>
+          <button type="submit" class="btn btn-primary" style="background:var(--text-main)">Şifreyi Değiştir</button>
+        </form>
+      </div>
+    </div>`;
+  }
 };
+
