@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const db = require('../config/db');
 
-const MODEL_NAME = 'gemini-1.5-flash'; // Fallback to 1.5 as 2.0 has 0 quota on this key
+const MODEL_NAME = 'gemini-pro'; // Stabil model
 
 // Ortak AI İstek Fonksiyonu
 const getAIResponse = async (prompt) => {
