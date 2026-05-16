@@ -102,12 +102,13 @@ async function loadNews(targetId) {
     const articles = await api.get('/news/latest');
     const grid = document.getElementById(targetId);
     if (!grid || !Array.isArray(articles)) return;
-    grid.innerHTML = articles.map(a => `
+    const repeated = [...articles, ...articles];
+    grid.innerHTML = '<div class="news-track">' + repeated.map(a => `
       <div class="news-card glass-panel" onclick="if('${a.url}' !== '#') window.open('${a.url}','_blank')" style="cursor:pointer">
         <h4 style="margin-bottom:8px">${a.title}</h4>
         <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">${a.description || ''}</p>
         <div class="news-meta"><span class="source" style="font-weight:700;color:var(--primary)">${a.source}</span><span>${new Date(a.publishedAt).toLocaleDateString()}</span></div>
-      </div>`).join('');
+      </div>`).join('') + '</div>';
   } catch(e) {}
 }
 
