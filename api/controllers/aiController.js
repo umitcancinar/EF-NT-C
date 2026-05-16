@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const db = require('../config/db');
 
-const MODEL_NAME = 'gemini-1.5-flash'; // En yaygın kullanılan ücretsiz model
+const MODEL_NAME = 'gemini-flash-latest'; // Google'ın güncel çalışan model ismi
 
 // Ortak AI İstek Fonksiyonu
 const getAIResponse = async (prompt) => {
