@@ -73,7 +73,7 @@ const initDB = async () => {
       );
     `);
 
-    // Ensure new columns exist in users table (migration-safe)
+    // Ensure new columns exist in users & ai_reports tables (migration-safe)
     const cols = [
       "ALTER TABLE users ADD COLUMN IF NOT EXISTS full_name VARCHAR(100)",
       "ALTER TABLE users ADD COLUMN IF NOT EXISTS company_name VARCHAR(100)",
@@ -82,7 +82,9 @@ const initDB = async () => {
       "ALTER TABLE users ADD COLUMN IF NOT EXISTS city VARCHAR(50)",
       "ALTER TABLE users ADD COLUMN IF NOT EXISTS capital_range VARCHAR(30)",
       "ALTER TABLE users ADD COLUMN IF NOT EXISTS experience VARCHAR(20)",
-      "ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_completed BOOLEAN DEFAULT FALSE"
+      "ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_completed BOOLEAN DEFAULT FALSE",
+      "ALTER TABLE ai_reports ADD COLUMN IF NOT EXISTS title VARCHAR(100)",
+      "ALTER TABLE ai_reports ADD COLUMN IF NOT EXISTS content TEXT"
     ];
     for (const q of cols) { await db.query(q); }
 

@@ -76,28 +76,60 @@ exports.riskReport = async (req, res) => {
   try {
     const { sector, newsContext, lang } = req.body;
     const prompt = lang === 'TR' 
-      ? `Sen profesyonel bir finans ve sektör analistisin. 
-         Sektör: ${sector}
-         Güncel Bağlam/Haberler: ${newsContext}
-         
-         Lütfen şu başlıklar altında DERİN bir analiz yap:
-         1. GÜNCEL HABER ANALİZİ: Verilen haberlerin bu sektöre doğrudan etkileri nelerdir?
-         2. RİSK SEVİYESİ VE NEDENLERİ: Sektörün şu anki kırılganlıkları nelerdir?
-         3. SEKTÖREL FIRSATLAR: Bu kriz veya haberlerden doğabilecek fırsatlar nelerdir?
-         4. STRATEJİK TAVSİYELER: Bu sektördeki bir işletme sahibi veya yatırımcı şu an ne yapmalı?
-         
-         Yanıtı profesyonel bir rapor formatında, net ve aksiyona dökülebilir şekilde ver.`
-      : `You are a professional financial and sectoral analyst.
-         Sector: ${sector}
-         News Context: ${newsContext}
-         
-         Please provide a DEEP analysis under these headings:
-         1. CURRENT NEWS ANALYSIS: Direct impacts of given news on this sector.
-         2. RISK LEVEL & REASONS: Current vulnerabilities.
-         3. SECTORAL OPPORTUNITIES: Potential opportunities arising from this situation.
-         4. STRATEGIC ADVICE: What should a business owner or investor do right now?
-         
-         Provide the response in a professional report format, clear and actionable.`;
+      ? `Sen EFİNTİC platformunun baş finans ve strateji danışmanısın. Aşağıda belirtilen sektör ve bağlama göre, en güncel ekonomik göstergeleri, küresel ve bölgesel risk faktörlerini ve piyasa trendlerini hesaba katarak SON DERECE DERİN, profesyonel ve kurumsal düzeyde bir Sektörel Risk ve Tavsiye Raporu oluştur.
+
+Sektör: ${sector}
+Kullanıcı Ek Bağlamı / İsteği: ${newsContext || 'Genel sektörel analiz ve risk tespiti.'}
+
+Lütfen raporu tam olarak aşağıdaki başlıklar altında, detaylı alt paragraflar, maddeler ve profesyonel bir dille (markdown kullanarak, görsel olarak çok zengin ve okunaklı olacak şekilde) oluştur:
+
+# 📊 ${sector.toUpperCase()} SEKTÖRÜ DETAYLI RİSK VE FIRSAT ANALİZİ
+
+### 1. 🌐 KÜRESEL VE BÖLGESEL MAKROEKONOMİK DURUM
+- Bu sektörün şu anki küresel ekonomik iklimden (enflasyon, faiz kararları, döviz kuru dalgalanmaları, jeopolitik riskler) nasıl etkilendiğini derinlemesine analiz et.
+- Sektörün tedarik zinciri ve lojistik bağımlılıklarını değerlendir.
+
+### 2. 📰 GÜNCEL GELİŞMELER & HABER ANALİZİ
+- Sektörü doğrudan veya dolaylı olarak etkileyen son dakika gelişmelerini (varsa kullanıcının ek bağlamındaki haberleri) analiz et. Bu gelişmelerin kısa ve orta vadeli etkilerini açıkla.
+
+### 3. 🚨 KRİTİK RİSK SEVİYESİ VE ZAAFİYETLER
+- Sektörün şu anki **Risk Seviyesini** açıkça belirt (örn: Düşük, Orta, Yüksek, Kritik) ve bunun nedenlerini açıkla.
+- Likidite riskleri, operasyonel riskler, yasal/regülatif riskler ve teknolojik dönüşüm risklerini ayrı ayrı ele al.
+
+### 4. 📈 YENİ NESİL FIRSATLAR VE STRATEJİK TRENDLER
+- Bu kriz veya değişim döneminde ortaya çıkan dijitalleşme, e-ticaret entegrasyonu, alternatif pazarlar ve yeni iş modelleri gibi fırsat alanlarını tanımla.
+
+### 5. 💡 ÜST DÜZEY YÖNETİCİ & YATIRIMCI STRATEJİK TAVSİYELERİ
+- Bu sektörde faaliyet gösteren bir işletme sahibi veya bu sektöre yatırım yapmayı düşünen bir yatırımcı için **aksiyona dökülebilir**, somut, finansal ve operasyonel yol haritası sun.
+
+Yanıtı düz bir yapay zeka çıktısı gibi değil; Sanki McKinsey, BCG veya PwC tarafından hazırlanmış milyon dolarlık profesyonel bir rapor gibi yaz. Giriş seviyesi veya genelgeçer ifadelerden kaçın, sektöre has teknik terimleri ve somut örnekleri kullan.`
+      : `You are the Chief Financial and Strategic Advisor of the EFİNTİC platform. Generate an EXTREMELY DEEP, professional, and corporate-level Sectoral Risk and Advisory Report for the following sector and context, taking into account the latest economic indicators, global and regional risk factors, and market trends.
+
+Sector: ${sector}
+User Additional Context / Request: ${newsContext || 'General sectoral analysis and risk assessment.'}
+
+Please generate the report under these exact headings, with detailed paragraphs and a highly professional tone:
+
+# 📊 ${sector.toUpperCase()} DETAILED RISK AND OPPORTUNITY ANALYSIS
+
+### 1. 🌐 GLOBAL AND REGIONAL MACROECONOMIC SITUATION
+- Deeply analyze how this sector is affected by the current global economic climate (inflation, interest rates, currency fluctuations, geopolitical risks).
+- Evaluate supply chain and logistical dependencies.
+
+### 2. 📰 LATEST DEVELOPMENTS & NEWS ANALYSIS
+- Analyze recent developments affecting the sector. Explain short and medium-term impacts.
+
+### 3. 🚨 CRITICAL RISK LEVEL & VULNERABILITIES
+- Clearly state the current **Risk Level** (e.g. Low, Medium, High, Critical) and explain the reasons.
+- Address liquidity, operational, regulatory, and technological risks separately.
+
+### 4. 📈 NEXT-GEN OPPORTUNITIES & STRATEGIC TRENDS
+- Define opportunity areas such as digitalization, e-commerce integration, alternative markets, and new business models.
+
+### 5. 💡 EXECUTIVE & INVESTOR STRATEGIC ADVICE
+- Provide an **actionable**, concrete financial and operational roadmap for a business owner or investor in this sector.
+
+Write this report as if it were prepared by a top-tier consulting firm like McKinsey, BCG, or PwC. Avoid generic statements; use industry-specific terminology and concrete examples.`;
          
     const report = await getAIResponse(prompt);
     

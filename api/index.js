@@ -3,6 +3,9 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+const initDB = require('./config/init');
+initDB().catch(err => console.error("❌ Auto database migration failed on boot:", err));
+
 const app = express();
 
 // Middlewares
