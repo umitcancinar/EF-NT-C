@@ -294,6 +294,12 @@ body.sidebar-active.sidebar-collapsed #main-content { margin-left: var(--sidebar
 .stat-info h3 { font-size: 13px; color: var(--text-muted); font-weight: 500; }
 .stat-info p { font-size: 24px; font-weight: 700; }
 
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
 /* ═══ FEATURE PAGES ═══ */
 .feature-page, .profile-section {
     max-width: 800px !important;
@@ -312,8 +318,9 @@ body.sidebar-active.sidebar-collapsed #main-content { margin-left: var(--sidebar
 
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 1024px) {
-    .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
-    .col-3, .col-4, .col-6, .col-8, .col-12 { grid-column: span 1 !important; }
+    .dashboard-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .col-12, .col-8, .col-6 { grid-column: span 2 !important; }
+    .col-3, .col-4 { grid-column: span 1 !important; }
     .hero h1 { font-size: 48px; }
 }
 
@@ -334,12 +341,21 @@ body.sidebar-active.sidebar-collapsed #main-content { margin-left: var(--sidebar
     #main-content { 
         margin-left: 0 !important; 
         width: 100% !important; 
-        padding: calc(var(--ticker-height) + 80px) 16px 40px; 
+        padding: calc(var(--ticker-height) + 80px) 12px 40px; 
     }
     body.sidebar-active header { padding-left: 16px; }
     body.sidebar-active.sidebar-collapsed header { padding-left: 16px; }
     
-    .dashboard-grid { grid-template-columns: 1fr; }
+    .dashboard-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px; }
+    .col-12, .col-8, .col-6 { grid-column: span 2 !important; }
+    .col-3, .col-4 { grid-column: span 1 !important; }
+    
+    .card { padding: 14px; border-radius: 16px; }
+    .stat-card { gap: 10px; }
+    .stat-icon { width: 38px; height: 38px; border-radius: 10px; font-size: 18px; }
+    .stat-info h3 { font-size: 11px; }
+    .stat-info p { font-size: 18px; }
+    
     .hero h1 { font-size: 32px; letter-spacing: -1px; }
     .hero p { font-size: 16px; }
     
@@ -355,6 +371,13 @@ body.sidebar-active.sidebar-collapsed #main-content { margin-left: var(--sidebar
         display: none;
     }
     .sidebar-overlay.show { display: block; }
+}
+
+@media (max-width: 576px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
 }
 
 /* Glass Panel Utility */

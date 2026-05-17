@@ -197,7 +197,7 @@ return `<div class="view-section feature-page"><div class="page-header"><div cla
           <div class="form-group"><label>Ad Soyad</label><input type="text" id="prof-fullname" class="form-control" value="${user?.full_name||''}"></div>
           <div class="form-group"><label>Şirket Adı</label><input type="text" id="prof-company" class="form-control" value="${user?.company_name||''}"></div>
           <div class="form-group"><label>Sektör</label><input type="text" id="prof-sector" class="form-control" value="${user?.sector||''}"></div>
-          <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+          <div class="form-row">
             <div class="form-group"><label>Ülke</label><input type="text" id="prof-country" class="form-control" value="${user?.country||''}"></div>
             <div class="form-group"><label>Şehir</label><input type="text" id="prof-city" class="form-control" value="${user?.city||''}"></div>
           </div>
@@ -208,7 +208,7 @@ return `<div class="view-section feature-page"><div class="page-header"><div cla
         <form id="password-form" class="ai-form">
           <div class="form-group"><label>Mevcut Şifre</label><input type="password" id="prof-curpass" class="form-control" required></div>
           <div class="form-group"><label>Yeni Şifre</label><input type="password" id="prof-newpass" class="form-control" required minlength="6"></div>
-          <button type="submit" class="btn btn-primary" style="background:var(--text-main)">Şifreyi Değiştir</button>
+          <button type="submit" class="btn btn-primary" style="background: var(--text-main); color: var(--bg-secondary) !important;">Şifreyi Değiştir</button>
         </form>
       </div>
     </div>`;
