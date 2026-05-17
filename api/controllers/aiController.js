@@ -136,7 +136,7 @@ Write this report as if it were prepared by a top-tier consulting firm like McKi
     // Raporu Kaydet
     if (req.user && req.user.userId) {
       await db.query(
-        'INSERT INTO ai_reports (user_id, type, title, content) VALUES ($1, $2, $3, $4)',
+        'INSERT INTO ai_reports (user_id, type, title, content, result) VALUES ($1, $2, $3, $4, $4)',
         [req.user.userId, 'risk', `${sector} Analizi`, report]
       );
     }
@@ -158,7 +158,7 @@ exports.partnerSearch = async (req, res) => {
     
     if (req.user && req.user.userId) {
       await db.query(
-        'INSERT INTO ai_reports (user_id, type, title, content) VALUES ($1, $2, $3, $4)',
+        'INSERT INTO ai_reports (user_id, type, title, content, result) VALUES ($1, $2, $3, $4, $4)',
         [req.user.userId, 'partner', `${sector} - ${city} Partner`, report]
       );
     }
@@ -180,7 +180,7 @@ exports.portfolio = async (req, res) => {
     
     if (req.user && req.user.userId) {
       await db.query(
-        'INSERT INTO ai_reports (user_id, type, title, content) VALUES ($1, $2, $3, $4)',
+        'INSERT INTO ai_reports (user_id, type, title, content, result) VALUES ($1, $2, $3, $4, $4)',
         [req.user.userId, 'portfolio', `Portföy Analizi (${capital})`, report]
       );
     }
@@ -202,7 +202,7 @@ exports.logistics = async (req, res) => {
     
     if (req.user && req.user.userId) {
       await db.query(
-        'INSERT INTO ai_reports (user_id, type, title, content) VALUES ($1, $2, $3, $4)',
+        'INSERT INTO ai_reports (user_id, type, title, content, result) VALUES ($1, $2, $3, $4, $4)',
         [req.user.userId, 'logistics', `${origin} -> ${destination} Lojistik`, report]
       );
     }
@@ -224,7 +224,7 @@ exports.accountant = async (req, res) => {
     
     if (req.user && req.user.userId) {
       await db.query(
-        'INSERT INTO ai_reports (user_id, type, title, content) VALUES ($1, $2, $3, $4)',
+        'INSERT INTO ai_reports (user_id, type, title, content, result) VALUES ($1, $2, $3, $4, $4)',
         [req.user.userId, 'accountant', `Muhasebe Danışmanlığı`, report]
       );
     }

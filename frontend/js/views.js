@@ -172,13 +172,13 @@ return `<div class="view-section feature-page"><div class="page-header"><div cla
       <div class="card glass-panel" style="margin-bottom:16px; cursor:pointer" onclick="this.querySelector('.report-content').classList.toggle('hidden')">
         <div style="display:flex; justify-content:space-between; align-items:center">
           <div>
-            <h4 style="margin:0">${r.title}</h4>
+            <h4 style="margin:0">${r.title || (r.type === 'risk' ? 'Sektörel Risk Analizi' : r.type === 'partner' ? 'İş Ortağı Analizi' : 'Yapay Zeka Raporu')}</h4>
             <span style="font-size:11px; color:var(--text-muted)">${new Date(r.created_at).toLocaleString()}</span>
           </div>
           <span class="badge" style="background:var(--primary); color:#fff; padding:4px 8px; border-radius:6px; font-size:10px">${r.type.toUpperCase()}</span>
         </div>
         <div class="report-content hidden" style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px; font-size:14px; line-height:1.6">
-          ${r.content.replace(/\n/g, '<br>')}
+          ${(r.content || r.result || '').replace(/\n/g, '<br>')}
         </div>
       </div>`).join('') : `<p style="text-align:center; color:var(--text-muted); padding:40px">Henüz raporunuz bulunmamaktadır.</p>`;
     
@@ -206,8 +206,8 @@ return `<div class="view-section feature-page"><div class="page-header"><div cla
         <hr style="margin:32px 0; border:0; border-top:1px solid var(--border)">
         <h3 style="margin-bottom:16px">Şifre Değiştir</h3>
         <form id="password-form" class="ai-form">
-          <div class="form-group"><label>Mevcut Şifre</label><input type="password" id="prof-curpass" class="form-control" required></div>
-          <div class="form-group"><label>Yeni Şifre</label><input type="password" id="prof-newpass" class="form-control" required minlength="6"></div>
+          <div class="form-group"><label>Mevcut Şifre</label><input type="password" id="prof-curpass" class="form-control" autocomplete="current-password" required></div>
+          <div class="form-group"><label>Yeni Şifre</label><input type="password" id="prof-newpass" class="form-control" autocomplete="new-password" required minlength="6"></div>
           <button type="submit" class="btn btn-primary" style="background: var(--text-main); color: var(--bg-secondary) !important;">Şifreyi Değiştir</button>
         </form>
       </div>

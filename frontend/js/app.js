@@ -210,7 +210,10 @@ function navigate(hash) {
       vc.innerHTML = views.reports(t, []); 
       loadReports(); 
       break;
-    case 'profile': vc.innerHTML = views.profile(t, currentUser); break;
+    case 'profile': 
+      vc.innerHTML = views.profile(t, currentUser); 
+      loadProfile(); 
+      break;
     default: 
       vc.innerHTML = views.landing(t); 
       loadNews('news-grid');
@@ -229,6 +232,29 @@ async function loadReports() {
   } catch(err) {
     console.error('Reports load error:', err);
   }
+}
+
+// ── Load Profile ──
+async function loadProfile() {
+  try {
+    const user = await api.get('/user/profile');
+    if (user && !user.error) {
+      currentUser = { ...currentUser, ...user };
+      localStorage.setItem('efintic_user', JSON.stringify(currentUser));
+      const fn = document.getElementById('prof-fullname');
+      if (fn) {
+        fn.value = user.full_name || '';
+        const comp = document.getElementById('prof-company');
+        if (comp) comp.value = user.company_name || '';
+        const sect = document.getElementById('prof-sector');
+        if (sect) sect.value = user.sector || '';
+        const cntr = document.getElementById('prof-country');
+        if (cntr) cntr.value = user.country || '';
+        const city = document.getElementById('prof-city');
+        if (city) city.value = user.city || '';
+      }
+    }
+  } catch(e) {}
 }
 
 
