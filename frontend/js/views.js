@@ -1,44 +1,105 @@
 // ═══ EFİNTİC VIEW TEMPLATES ═══
 const views = {
-landing(t) {
-return `<div class="view-section">
-<div class="landing-container">
-<div class="hero">
-  <h1 data-i18n="hero_title" style="text-transform: uppercase;">${t.hero_title}</h1>
-  <div class="hero-brand-badge">EFİNTİC</div>
-  <p data-i18n="hero_desc">${t.hero_desc}</p>
-  <a href="#register" class="btn btn-primary" data-i18n="btn_start">${t.btn_start}</a>
-</div>
-<div class="features-grid">
-  <div class="feature-card glass-panel"><div class="feat-icon" style="background:linear-gradient(135deg,#0071e3,#5856d6)"><i class='bx bx-bar-chart-alt-2'></i></div><h3 data-i18n="feat_1_title">${t.feat_1_title}</h3><p data-i18n="feat_1_desc">${t.feat_1_desc}</p></div>
-  <div class="feature-card glass-panel"><div class="feat-icon" style="background:linear-gradient(135deg,#ff9500,#ff3b30)"><i class='bx bx-group'></i></div><h3 data-i18n="feat_2_title">${t.feat_2_title}</h3><p data-i18n="feat_2_desc">${t.feat_2_desc}</p></div>
-  <div class="feature-card glass-panel"><div class="feat-icon" style="background:linear-gradient(135deg,#34c759,#30d158)"><i class='bx bx-wallet'></i></div><h3 data-i18n="feat_3_title">${t.feat_3_title}</h3><p data-i18n="feat_3_desc">${t.feat_3_desc}</p></div>
-</div>
-<div class="how-it-works" id="how-it-works-section">
-  <h2 class="section-title" data-i18n="how_title">${t.how_title}</h2>
-  <div class="steps">
-    <div class="step"><div class="step-num">1</div><h3 data-i18n="step_1_title">${t.step_1_title}</h3><p data-i18n="step_1_desc">${t.step_1_desc}</p></div>
-    <div class="step"><div class="step-num">2</div><h3 data-i18n="step_2_title">${t.step_2_title}</h3><p data-i18n="step_2_desc">${t.step_2_desc}</p></div>
-    <div class="step"><div class="step-num">3</div><h3 data-i18n="step_3_title">${t.step_3_title}</h3><p data-i18n="step_3_desc">${t.step_3_desc}</p></div>
-  </div>
-</div>
-<div class="news-section">
-  <h2 class="section-title" data-i18n="news_title">${t.news_title}</h2>
-  <div class="news-grid" id="news-grid">
-    <div class="news-card glass-panel"><h4>Yükleniyor...</h4><p>Haberler getiriliyor.</p></div>
-  </div>
-</div>
-<div class="cta-section">
-  <h2 data-i18n="cta_title">${t.cta_title}</h2>
-  <a href="#register" class="btn btn-primary" data-i18n="btn_start">${t.btn_start}</a>
-</div>
-<div class="landing-footer">
-  <p data-i18n="footer_copy">${t.footer_copy}</p>
-  <a href="https://umitcancinar.me" target="_blank" class="dev-link" data-i18n="footer_dev">${t.footer_dev}</a>
-</div>
-</div>
-</div>`;
-},
+  landing(t) {
+    return `<div class="view-section">
+      <div class="landing-container">
+        <div class="hero">
+          <div class="hero-brand-badge">
+            <span class="badge-glow-dot"></span>
+            <span>EFİNTİC INTELLECT</span>
+          </div>
+          <h1 class="hero-title">
+            <span class="hero-subtitle">${i18n.currentLang === 'TR' ? 'E-Ticaret & Finans' : 'E-Commerce & Finance'}</span>
+            <span class="hero-main-title">${t.hero_title}</span>
+          </h1>
+          <p class="hero-desc">${t.hero_desc}</p>
+          <div class="hero-actions">
+            <a href="#register" class="btn-apple-primary">
+              <span>${t.btn_start}</span>
+              <i class='bx bx-right-arrow-alt'></i>
+            </a>
+            <a href="#how-it-works-scroll" class="btn-apple-secondary">
+              <span>${i18n.currentLang === 'TR' ? 'Sistemi Keşfet' : 'Explore System'}</span>
+              <i class='bx bx-chevron-right'></i>
+            </a>
+          </div>
+        </div>
+        
+        <div class="features-grid">
+          <div class="feature-card glass-panel">
+            <div class="feat-icon-container" style="background: linear-gradient(135deg, rgba(0, 113, 227, 0.12), rgba(88, 86, 214, 0.12))">
+              <i class='bx bx-bar-chart-alt-2' style="color: #0071e3"></i>
+            </div>
+            <h3>${t.feat_1_title}</h3>
+            <p>${t.feat_1_desc}</p>
+            <div class="card-arrow"><i class='bx bx-chevron-right'></i></div>
+          </div>
+          
+          <div class="feature-card glass-panel">
+            <div class="feat-icon-container" style="background: linear-gradient(135deg, rgba(255, 149, 0, 0.12), rgba(255, 59, 48, 0.12))">
+              <i class='bx bx-group' style="color: #ff9500"></i>
+            </div>
+            <h3>${t.feat_2_title}</h3>
+            <p>${t.feat_2_desc}</p>
+            <div class="card-arrow"><i class='bx bx-chevron-right'></i></div>
+          </div>
+          
+          <div class="feature-card glass-panel">
+            <div class="feat-icon-container" style="background: linear-gradient(135deg, rgba(52, 199, 89, 0.12), rgba(48, 209, 88, 0.12))">
+              <i class='bx bx-wallet' style="color: #34c759"></i>
+            </div>
+            <h3>${t.feat_3_title}</h3>
+            <p>${t.feat_3_desc}</p>
+            <div class="card-arrow"><i class='bx bx-chevron-right'></i></div>
+          </div>
+        </div>
+        
+        <div class="how-it-works" id="how-it-works-section">
+          <h2 class="section-title">${t.how_title}</h2>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">01</div>
+              <h3>${t.step_1_title}</h3>
+              <p>${t.step_1_desc}</p>
+            </div>
+            <div class="step">
+              <div class="step-num">02</div>
+              <h3>${t.step_2_title}</h3>
+              <p>${t.step_2_desc}</p>
+            </div>
+            <div class="step">
+              <div class="step-num">03</div>
+              <h3>${t.step_3_title}</h3>
+              <p>${t.step_3_desc}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="news-section">
+          <h2 class="section-title">${t.news_title}</h2>
+          <div class="news-grid" id="news-grid">
+            <div class="news-card glass-panel">
+              <h4>Yükleniyor...</h4>
+              <p>Haberler getiriliyor.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cta-section">
+          <h2>${t.cta_title}</h2>
+          <a href="#register" class="btn-apple-primary" style="margin: 0 auto; width: fit-content; padding: 14px 36px;">
+            <span>${t.btn_start}</span>
+            <i class='bx bx-right-arrow-alt'></i>
+          </a>
+        </div>
+        
+        <div class="landing-footer">
+          <p>${t.footer_copy}</p>
+          <a href="https://umitcancinar.me" target="_blank" class="dev-link">${t.footer_dev}</a>
+        </div>
+      </div>
+    </div>`;
+  },
 
 login(t) {
 return `<div class="auth-container"><div class="auth-box glass-panel">
